@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Main supports container -->
+  <link name="supports"/>
+
+  <!-- Macro to create individual supports -->
+  <xacro:macro name="spherical_support" params="prefix angle">
+    <!-- Virtual link for positioning -->
+    <link name="${prefix}_virtual"/>
+
+    <!-- Sphere link -->
+    <link name="${prefix}_sphere">
+      <visual>
+        <geometry>
+          <sphere radius="0.005"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <geometry>
+          <sphere radius="0.005"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.01"/>
+        <inertia ixx="0.00001" iyy="0.00001" izz="0.00001" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <!-- Joint hierarchy -->
+    <joint name="${prefix}_virtual_joint" type="fixed">
+      <parent link="supports"/>
+      <child link="${prefix}_virtual"/>
+      <origin xyz="0 0 0" rpy="0 ${pi / 4} ${angle}"/>
+    </joint>
+
+    <joint name="${prefix}_sphere_joint" type="fixed">
+      <parent link="${prefix}_virtual"/>
+      <child link="${prefix}_sphere"/>
+      <origin xyz="0.249 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Physics properties -->
+    <gazebo reference="${prefix}_sphere">
+      <mu>0.01</mu>
+      <mu2>0.01</mu2>
+      <contact>
+        <collide_without_contact>false</collide_without_contact>
+        <stiffness>5e6</stiffness>
+        <damping>1e3</damping>
+      </contact>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- <xacro:spherical_support prefix="support1" angle="$(eval 0)"/> -->
+  <xacro:spherical_support prefix="support2" angle="$(eval 2*pi/4)"/>
+  <!-- <xacro:spherical_support prefix="support3" angle="$(eval 4*pi/4)"/> -->
+  <xacro:spherical_support prefix="support4" angle="$(eval 6*pi/4)"/>
+
+  <!-- Connect supports to base -->
+  <joint name="supports_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="supports"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>

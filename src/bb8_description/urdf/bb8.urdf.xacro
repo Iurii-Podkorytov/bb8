@@ -3,4 +3,6 @@
   <xacro:include filename="common_properties.xacro" />
   <xacro:include filename="hamster.xacro" />
   <xacro:include filename="sphere.xacro" />
+  <xacro:include filename="supports.xacro" />
+  <xacro:include filename="head.xacro" />
 </robot>
