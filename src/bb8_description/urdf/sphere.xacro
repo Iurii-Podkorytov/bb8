@@ -4,7 +4,7 @@
   <link name="sphere_link">
     <visual>
       <geometry>
-        <mesh filename="file:///$(find bb8_description)/meshes/sphere_hollow.stl" scale="0.5 0.5 0.5"/>
+        <mesh filename="file:///$(find bb8_description)/meshes/sphere.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="white_transparent">
         <color rgba="1 1 1 0.2"/>
@@ -12,19 +12,11 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="file:///$(find bb8_description)/meshes/sphere_hollow.stl" scale="0.5 0.5 0.5"/>
+        <mesh filename="file:///$(find bb8_description)/meshes/sphere.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <surface>
-        <friction>
-          <ode>
-            <mu>1.0</mu>
-            <mu2>1.0</mu2>
-          </ode>
-        </friction>
-      </surface>
     </collision>
     <inertial>
-      <mass value="1.0"/>
+      <mass value="1"/>
       <inertia ixx="0.2" iyy="0.2" izz="0.2" ixy="0.0" ixz="0.0" iyz="0.0"/>
     </inertial>
   </link>
@@ -33,7 +25,8 @@
   <joint name="sphere_joint" type="floating">
     <parent link="base_footprint"/>
     <child link="sphere_link"/>
-    <origin xyz="0 0 ${sphere_radius}" rpy="0 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <!-- <origin xyz="0 0 ${sphere_radius}" rpy="0 0 0"/> -->
   </joint>
 
   <gazebo>

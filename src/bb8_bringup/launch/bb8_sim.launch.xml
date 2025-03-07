@@ -8,11 +8,11 @@
     </node>
 
     <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
-        <!-- <arg name="pause" value="true"/> -->
+        <arg name="pause" value="true"/>
     </include>
 
     <node pkg="gazebo_ros" exec="spawn_entity.py" 
-          args="-topic robot_description -entity my_robot"/>
+          args="-topic robot_description -entity my_robot -z 0.3"/>
 
     <node pkg="bb8_description" exec="p3d_tf_broadcast"/>
 

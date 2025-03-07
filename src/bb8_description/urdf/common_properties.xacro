@@ -2,9 +2,9 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Constants -->
   <xacro:property name="base_radius" value="0.05" /> <!-- Radius of the circular base -->
-  <xacro:property name="wheel_radius" value="0.03" /> <!-- Radius of the wheels -->
-  <xacro:property name="wheel_separation" value="0.12" /> <!-- Distance between the wheels -->
-  <xacro:property name="sphere_radius" value="0.15" /> <!-- Radius of the outer sphere -->
+  <xacro:property name="wheel_radius" value="0.069" /> <!-- Radius of the wheels -->
+  <xacro:property name="wheel_separation" value="0.364" /> <!-- Distance between the wheels -->
+  <xacro:property name="sphere_radius" value="0.51" /> <!-- Radius of the outer sphere -->
 
   <!-- Materials -->
   <material name="blue">
