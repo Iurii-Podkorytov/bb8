@@ -15,12 +15,6 @@ def generate_launch_description():
         ' ', xacro_file
     ])
 
-    # Controller Parameters
-    robot_controllers = PathJoinSubstitution([
-        FindPackageShare("bb8_controllers"),
-        "config", "controllers.yaml"
-    ])
-
     # Nodes
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -56,11 +50,20 @@ def generate_launch_description():
         arguments=["joint_broad"],
     )
 
+    head_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["head_controller"],
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         gazebo_launch,
         spawn_entity,
-        TimerAction(period=3.0, actions=[joint_broad_spawner]),
-        TimerAction(period=5.0, actions=[diff_drive_spawner]),
-
+        joint_broad_spawner,
+        diff_drive_spawner,
+        head_controller_spawner,
+        # TimerAction(period=3.0, actions=[joint_broad_spawner]),
+        # TimerAction(period=5.0, actions=[diff_drive_spawner]),
+        # TimerAction(period=7.0, actions=[head_controller_spawner]),
     ])

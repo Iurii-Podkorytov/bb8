@@ -3,11 +3,14 @@ controller_manager:
     update_rate: 30
     use_sim_time: true
 
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
     diff_cont:
       type: diff_drive_controller/DiffDriveController
 
-    joint_broad:
-      type: joint_state_broadcaster/JointStateBroadcaster
+    head_controller:
+          type: position_controllers/JointGroupPositionController
 
 diff_cont:
   ros__parameters:
@@ -18,3 +21,13 @@ diff_cont:
     wheel_separation: 0.3437
     wheel_radius: 0.076
     use_stamped_vel: false
+
+head_controller:
+  ros__parameters:
+    joints:
+      - head_x_joint
+      - head_y_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position

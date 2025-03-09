@@ -56,6 +56,9 @@
 
   <xacro:spherical_support prefix="support1" angle_1="$(eval pi/4)" angle_2="$(eval 2*pi/4)"/>
   <xacro:spherical_support prefix="support2" angle_1="$(eval pi/4)" angle_2="$(eval 6*pi/4)"/>
+  <xacro:spherical_support prefix="support3" angle_1="$(eval -pi/3)" angle_2="$(eval 0)"/>
+  <xacro:spherical_support prefix="support4" angle_1="$(eval -pi/3)" angle_2="$(eval 2*pi/3)"/>
+  <xacro:spherical_support prefix="support5" angle_1="$(eval -pi/3)" angle_2="$(eval 4*pi/3)"/>
 
   <!-- Connect supports to base -->
   <joint name="supports_joint" type="fixed">
