@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Constants -->
-  <xacro:property name="base_radius" value="0.05" /> <!-- Radius of the circular base -->
   <xacro:property name="wheel_radius" value="0.069" /> <!-- Radius of the wheels -->
   <xacro:property name="wheel_separation" value="0.3641" /> <!-- Distance between the wheels -->
   <xacro:property name="sphere_radius" value="0.51" /> <!-- Radius of the outer sphere -->
@@ -41,7 +40,7 @@
   </material>
 
   <gazebo reference="base_link">
-  <material>Gazebo/Blue</material>
+    <material>Gazebo/Blue</material>
   </gazebo>
 
   <gazebo reference="left_wheel">

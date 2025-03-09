@@ -56,6 +56,11 @@ def generate_launch_description():
         arguments=["head_controller"],
     )
 
+    sphere_tf_publisher = Node(
+        package="bb8_description",
+        executable="p3d_tf_broadcast",
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         gazebo_launch,
@@ -63,7 +68,5 @@ def generate_launch_description():
         joint_broad_spawner,
         diff_drive_spawner,
         head_controller_spawner,
-        # TimerAction(period=3.0, actions=[joint_broad_spawner]),
-        # TimerAction(period=5.0, actions=[diff_drive_spawner]),
-        # TimerAction(period=7.0, actions=[head_controller_spawner]),
+        sphere_tf_publisher,
     ])

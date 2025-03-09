@@ -18,8 +18,8 @@ diff_cont:
     base_frame_id: base_footprint
     left_wheel_names: ["left_wheel_joint"]
     right_wheel_names: ["right_wheel_joint"]
-    wheel_separation: 0.3437
-    wheel_radius: 0.076
+    wheel_separation: 0.3641
+    wheel_radius: 0.069
     use_stamped_vel: false
 
 head_controller:
