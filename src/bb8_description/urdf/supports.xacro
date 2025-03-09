@@ -45,6 +45,7 @@
     <gazebo reference="${prefix}_sphere">
       <mu>0.01</mu>
       <mu2>0.01</mu2>
+      <self_collide>true</self_collide>
       <contact>
         <collide_without_contact>false</collide_without_contact>
         <stiffness>5e6</stiffness>

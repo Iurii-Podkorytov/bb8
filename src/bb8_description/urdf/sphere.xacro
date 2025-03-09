@@ -43,7 +43,6 @@
   <gazebo reference="sphere_link">
     <mu>0.5</mu>
     <mu2>0.5</mu2>
-    <self_collide>true</self_collide>
     <collision>
       <margin>0.01</margin>
     </collision>

@@ -1,19 +1,23 @@
 <launch>
+    <!-- Define the path to the URDF/XACRO file -->
     <let name="urdf_path"
         value="$(find-pkg-share bb8_description)/urdf/bb8.urdf.xacro"/>
 
+    <!-- Robot State Publisher -->
     <node pkg="robot_state_publisher" exec="robot_state_publisher">
         <param name="robot_description" 
-                value="$(command 'xacro $(var urdf_path)')"/>
+               value="$(command 'xacro $(var urdf_path)')"/>
     </node>
 
+    <!-- Gazebo Simulation -->
     <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
-        <arg name="pause" value="true"/>
+        <arg name="pause" value="false"/>
     </include>
 
+    <!-- Spawn the robot in Gazebo -->
     <node pkg="gazebo_ros" exec="spawn_entity.py" 
           args="-topic robot_description -entity my_robot -z 0.3"/>
 
+    <!-- Sphere TF broadcaster -->
     <node pkg="bb8_description" exec="p3d_tf_broadcast"/>
-
 </launch>
