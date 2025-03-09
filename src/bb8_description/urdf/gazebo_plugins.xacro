@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <gazebo>
+    <plugin name="gazebo_ros_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <!-- <joint_name>right_wheel_joint</joint_name> -->
+      <!-- <joint_name>left_wheel_joint</joint_name> -->
+      <joint_name>head_x_joint</joint_name>
+      <joint_name>head_y_joint</joint_name>
+      <update_rate>100.0</update_rate>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="libgazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
+    <ros>
+      <remapping>odom:=sphere_pose</remapping>
+    </ros>
+    <frame_name>base_footprint</frame_name>
+    <body_name>sphere_link</body_name>
+    <update_rate>50</update_rate>
+    <gaussian_noise>0.01</gaussian_noise>
+    </plugin>
+  </gazebo>
+
+</robot>

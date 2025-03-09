@@ -6,6 +6,26 @@
   <xacro:property name="wheel_separation" value="0.3641" /> <!-- Distance between the wheels -->
   <xacro:property name="sphere_radius" value="0.51" /> <!-- Radius of the outer sphere -->
 
+  <!-- Inertia -->
+  <xacro:macro name="inertial_sphere" params="mass radius *origin">
+      <inertial>
+          <xacro:insert_block name="origin"/>
+          <mass value="${mass}" />
+          <inertia ixx="${(2/5) * mass * (radius*radius)}" ixy="0.0" ixz="0.0"
+                  iyy="${(2/5) * mass * (radius*radius)}" iyz="0.0"
+                  izz="${(2/5) * mass * (radius*radius)}" />
+      </inertial>
+  </xacro:macro>  
+  <xacro:macro name="inertial_cylinder" params="mass length radius *origin">
+    <inertial>
+        <xacro:insert_block name="origin"/>
+        <mass value="${mass}" />
+        <inertia ixx="${(1/12) * mass * (3*radius*radius + length*length)}" ixy="0.0" ixz="0.0"
+                iyy="${(1/12) * mass * (3*radius*radius + length*length)}" iyz="0.0"
+                izz="${(1/2) * mass * (radius*radius)}" />
+    </inertial>
+  </xacro:macro>
+
   <!-- Materials -->
   <material name="blue">
     <color rgba="0 0 1 1"/>

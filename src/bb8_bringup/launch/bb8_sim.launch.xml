@@ -11,6 +11,7 @@
 
     <!-- Gazebo Simulation -->
     <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
+        <!-- <arg name="pause" value="true"/> -->
         <arg name="pause" value="false"/>
     </include>
 
@@ -20,4 +21,7 @@
 
     <!-- Sphere TF broadcaster -->
     <node pkg="bb8_description" exec="p3d_tf_broadcast"/>
+
+    <node pkg="controller_manager" exec="spawner" args="joint_broad" />
+    <node pkg="controller_manager" exec="spawner" args="diff_cont" />
 </launch>
