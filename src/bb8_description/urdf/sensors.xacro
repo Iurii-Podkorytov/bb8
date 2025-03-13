@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- IMU Macro Definition -->
+  <xacro:macro name="imu_sensor" params="parent_link sensor_name">
+
+    <!-- IMU Link -->
+    <link name="${sensor_name}_link" />
+
+    <!-- IMU Joint -->
+    <joint name="${sensor_name}_joint" type="fixed">
+      <parent link="${parent_link}"/>
+      <child link="${sensor_name}_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Gazebo IMU Plugin -->
+    <gazebo reference="${sensor_name}_link">
+      <sensor name="${sensor_name}" type="imu">
+        <always_on>true</always_on>
+        <update_rate>50.0</update_rate>
+        <visualize>true</visualize>
+        <plugin name="gazebo_ros_${sensor_name}" filename="libgazebo_ros_imu_sensor.so">
+          <ros>
+            <remapping>~/out:=${sensor_name}</remapping>
+          </ros>
+          <frame_name>${sensor_name}_link</frame_name>
+          <enable_orientation>true</enable_orientation>
+          <enable_angular_velocity>true</enable_angular_velocity>
+          <enable_linear_acceleration>true</enable_linear_acceleration>
+          <imu>
+            <noise>
+              <type>gaussian</type>
+              <accel>
+                <mean>0.0</mean>
+                <stddev>0.01</stddev>
+              </accel>
+              <gyro>
+                <mean>0.0</mean>
+                <stddev>0.001</stddev>
+              </gyro>
+            </noise>
+          </imu>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+  </xacro:macro>
+
+    <xacro:imu_sensor parent_link="base_link" sensor_name="imu_base"/>
+    <xacro:imu_sensor parent_link="head" sensor_name="imu_head"/>
+
+</robot>
