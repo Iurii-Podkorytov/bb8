@@ -16,11 +16,22 @@ diff_cont:
   ros__parameters:
     publish_rate: 50.0
     base_frame_id: base_footprint
+    odom_frame_id: odom 
     left_wheel_names: ["left_wheel_joint"]
     right_wheel_names: ["right_wheel_joint"]
     wheel_separation: 0.3641
     wheel_radius: 0.069
     use_stamped_vel: false
+    open_loop: false
+    # Scale movement to the ratio between wheel and rolling radius
+    # DOES NOT WORK KAKSDASJJDHJASNJCNAJSFHIJSNJADNDJNAKDKMASKLM
+    linear_scaling_factor: 1
+    angular_scaling_factor: 100
+    # linear_scaling_factor: (0.3641 / 2) / (0.26 * 0.069) 
+    # angular_scaling_factor: (0.3641 / 2) /(0.26 * 0.069)
+    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    odom_params_from_ros_params: true # Make sure controller reads params
 
 head_controller:
   ros__parameters:
@@ -31,3 +42,4 @@ head_controller:
       - position
     state_interfaces:
       - position
+

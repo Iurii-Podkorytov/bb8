@@ -13,22 +13,22 @@ class P3DBroadcaster(Node):
         self.subscription = self.create_subscription(
             Odometry,
             '/sphere_pose',
-            self.odom_callback,
-            10  # QoS depth
+            self._callback,
+            10 
         )
-        self.subscription  # Prevent unused variable warning
+        self.subscription 
 
         self.get_logger().info('P3D Tf Broadcaster initialized.')
 
-    def odom_callback(self, msg):
+    def _callback(self, msg):
         """
-        Callback function to handle incoming Odometry messages.
+        Callback function to handle incoming messages.
         Broadcasts the transform between base_footprint and sphere.
         """
         # Create a TransformStamped message
         t = TransformStamped()
 
-        # Set the header with the same timestamp and frame ID as the Odometry message
+        # Set the header with the same timestamp and frame ID
         t.header = msg.header
         t.child_frame_id = 'sphere_link'
 

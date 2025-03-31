@@ -15,6 +15,11 @@ def generate_launch_description():
         ' ', xacro_file
     ])
 
+    world_file = PathJoinSubstitution([
+        FindPackageShare('bb8_bringup'),
+        'worlds', 'test.sdf'             # Path to your .sdf file
+    ])
+
     # Nodes
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -29,6 +34,10 @@ def generate_launch_description():
                 'launch', 'gazebo.launch.py'
             ])
         ]),
+        launch_arguments=[
+            ('pause', 'false'),
+            ('world', world_file)
+            ]
     )
 
     spawn_entity = Node(
@@ -61,6 +70,14 @@ def generate_launch_description():
         executable="p3d_tf_broadcast",
     )
 
+    slam_node = Node(
+        package='slam_toolbox',
+        executable='async_slam_toolbox_node',
+        name='slam_toolbox',
+        parameters=['src/slam_params.yaml'],
+        output='screen'
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         gazebo_launch,
@@ -69,4 +86,5 @@ def generate_launch_description():
         diff_drive_spawner,
         head_controller_spawner,
         sphere_tf_publisher,
+        slam_node,
     ])

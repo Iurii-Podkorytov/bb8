@@ -3,7 +3,6 @@
 
   <!-- Base Footprint -->
   <link name="base_footprint" />
-
   <!-- Base Link -->
   <link name="base_link">
     <visual>
@@ -26,7 +25,7 @@
       </geometry>
       <material name="black"/>
     </visual>
-    <xacro:inertial_cylinder mass="3.0" length="0.04" radius="0.05">
+    <xacro:inertial_cylinder mass="1.0" length="0.04" radius="0.05">
       <origin xyz="0 0 0" rpy="0 0 0" />
     </xacro:inertial_cylinder>
   </link>
@@ -34,36 +33,52 @@
   <!-- Left Wheel -->
   <link name="left_wheel">
     <visual>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <xacro:inertial_sphere mass="0.05" radius="0.076">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
     </xacro:inertial_sphere>
+  </link>
+
+  <link name="wheel_connector" >
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.01" />
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <xacro:inertial_cylinder mass="0.01" length="0.01" radius="0.01">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_cylinder>
   </link>
 
   <!-- Right Wheel -->
   <link name="right_wheel">
     <visual>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <xacro:inertial_sphere mass="0.05" radius="0.076">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
     </xacro:inertial_sphere>
   </link>
 
@@ -74,6 +89,12 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
+  <joint name="wheel_connector_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="wheel_connector" />
+    <origin xyz="0 0 0" rpy="0 0 ${pi/2}"/>
+  </joint>
+
   <joint name="counterweight_joint" type="fixed">
     <parent link="base_link" />
     <child link="counterweight" />
@@ -81,17 +102,17 @@
   </joint>
 
   <joint name="left_wheel_joint" type="continuous">
-    <parent link="base_link"/>
+    <parent link="wheel_connector"/>
     <child link="left_wheel"/>
-    <origin xyz="${0.3437/2} 0 -0.1458" rpy="0 ${pi / 2} 0"/>
-    <axis xyz="0 0 1"/>
+    <origin xyz="${0.3437/2} 0 -0.1458" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
   </joint>
 
   <joint name="right_wheel_joint" type="continuous">
-    <parent link="base_link"/>
+    <parent link="wheel_connector"/>
     <child link="right_wheel"/>
-    <origin xyz="-${0.3437/2} 0 -0.1458" rpy="0 ${pi/2} 0"/>
-    <axis xyz="0 0 1"/>
+    <origin xyz="-${0.3437/2} 0 -0.1458" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
   </joint>
 
 

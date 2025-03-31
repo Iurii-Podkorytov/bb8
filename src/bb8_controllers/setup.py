@@ -23,6 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'head_controller = bb8_controllers.head_controller:main',
         ],
     },
 )
