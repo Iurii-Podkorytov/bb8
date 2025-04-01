@@ -17,9 +17,8 @@ class CustomOdometryNode(Node):
         self.wheel_separation = 0.3641
         self.wheel_radius = 0.069
         self.sphere_radius = 0.26
-        # self.linear_scale = (self.wheel_separation / 2) / (self.sphere_radius * self.wheel_radius)
         self.linear_scale = 7.5
-        self.angular_scale = 4.5
+        self.angular_scale = 12
 
         # Internal state
         self.x = 0.0
