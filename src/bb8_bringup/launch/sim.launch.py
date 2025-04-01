@@ -47,10 +47,10 @@ def generate_launch_description():
         output='screen'
     )
 
-    diff_drive_spawner = Node(
+    wheels_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["diff_cont"],
+        arguments=["wheels_controller"],
     )
 
     joint_broad_spawner = Node(
@@ -88,16 +88,22 @@ def generate_launch_description():
         executable="head_controller",
     )
 
+    hamster_controller = Node(
+        package="bb8_controllers",
+        executable="hamster_controller",
+        parameters=[{"use_sim_time": True}]
+    )
 
     return LaunchDescription([
         robot_state_publisher,
         gazebo_launch,
         spawn_entity,
         joint_broad_spawner,
-        diff_drive_spawner,
+        wheels_controller_spawner,
         head_controller_spawner,
         sphere_tf_publisher,
         base_tf_publisher,
-        slam_node,
+        # slam_node,
         head_controller,
+        hamster_controller,
     ])
