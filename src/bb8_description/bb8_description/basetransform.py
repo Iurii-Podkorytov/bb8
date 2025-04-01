@@ -7,10 +7,10 @@ import tf_transformations
 
 class ImuToTf(Node):
     def __init__(self):
-        super().__init__('imu_to_tf')
+        super().__init__('base_transform')
         self.subscription = self.create_subscription(
             Imu,
-            '/imu_base',  # Topic where IMU data is published
+            '/imu_base',
             self.imu_callback,
             10
         )
@@ -23,7 +23,7 @@ class ImuToTf(Node):
 
         # Create transform
         t = TransformStamped()
-        t.header.stamp = msg.header.stamp
+        t.header.stamp = self.get_clock().now().to_msg()
         t.header.frame_id = 'base_footprint'
         t.child_frame_id = 'base_link'
         t.transform.translation.x = 0.0

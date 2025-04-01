@@ -4,6 +4,7 @@ from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch.actions import TimerAction
 import os
 
 def generate_launch_description():
@@ -17,7 +18,7 @@ def generate_launch_description():
 
     world_file = PathJoinSubstitution([
         FindPackageShare('bb8_bringup'),
-        'worlds', 'test.sdf'             # Path to your .sdf file
+        'worlds', 'test_world.sdf'
     ])
 
     # Nodes
@@ -68,11 +69,13 @@ def generate_launch_description():
     sphere_tf_publisher = Node(
         package="bb8_description",
         executable="p3d_tf_broadcast",
+        parameters=[{"use_sim_time": True}]
     )
     
     base_tf_publisher = Node(
         package="bb8_description",
         executable="base_transform",
+        parameters=[{"use_sim_time": True}]
     )
 
     slam_node = Node(
@@ -94,15 +97,28 @@ def generate_launch_description():
         parameters=[{"use_sim_time": True}]
     )
 
+    ekf = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=['src/ekf_params.yaml'],
+        remappings=[('odometry/filtered', 'odom')]
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         gazebo_launch,
         spawn_entity,
+        sphere_tf_publisher,
+        base_tf_publisher,
         joint_broad_spawner,
         wheels_controller_spawner,
         head_controller_spawner,
-        sphere_tf_publisher,
-        base_tf_publisher,
+        # TimerAction(period=5.0, actions=[joint_broad_spawner,]),
+        # TimerAction(period=5.5, actions=[wheels_controller_spawner,]),
+        # TimerAction(period=6.0, actions=[head_controller_spawner,]),
+        # ekf,
         # slam_node,
         head_controller,
         hamster_controller,

@@ -9,9 +9,9 @@ from std_msgs.msg import Float64MultiArray
 from geometry_msgs.msg import TransformStamped
 import math
 
-class CustomOdometryNode(Node):
+class HamsterController(Node):
     def __init__(self):
-        super().__init__('custom_odometry_node')
+        super().__init__('hamster_controller')
         
         # Robot parameters
         self.wheel_separation = 0.3641
@@ -38,7 +38,7 @@ class CustomOdometryNode(Node):
             '/joint_states',
             self.joint_state_callback,
             10)
-        self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
+        self.odom_pub = self.create_publisher(Odometry, '/odom_wheels', 10)
         self.tf_broadcaster = TransformBroadcaster(self)
 
         # Velocity command subscriber
@@ -48,8 +48,8 @@ class CustomOdometryNode(Node):
             self.cmd_vel_callback,
             10)
 
-        # Timer for odometry updates (50 Hz)
-        self.timer = self.create_timer(1.0/50.0, self.update_odometry)
+        # Timer for odometry updates (30 Hz)
+        self.timer = self.create_timer(1.0/30.0, self.update_odometry)
 
     def cmd_vel_callback(self, msg):
         # Scale velocities
@@ -64,8 +64,6 @@ class CustomOdometryNode(Node):
         command_msg = Float64MultiArray()
         command_msg.data = [left_vel, right_vel]
         self._command_publisher.publish(command_msg)
-
-
 
     def joint_state_callback(self, msg):
         try:
@@ -135,9 +133,12 @@ class CustomOdometryNode(Node):
         odom.pose.pose.position.y = self.y
         odom.pose.pose.orientation.z = math.sin(self.theta / 2)
         odom.pose.pose.orientation.w = math.cos(self.theta / 2)
-        odom.twist.twist.linear.x = linear / dt
-        odom.twist.twist.angular.z = angular / dt
-        self.odom_pub.publish(odom)
+        try:
+            odom.twist.twist.linear.x = linear / dt
+            odom.twist.twist.angular.z = angular / dt
+            self.odom_pub.publish(odom)
+        except ZeroDivisionError as e:
+            self.get_logger().error('dt = 0')
 
     # Properties to track wheel positions
     @property
@@ -158,7 +159,7 @@ class CustomOdometryNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = CustomOdometryNode()
+    node = HamsterController()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

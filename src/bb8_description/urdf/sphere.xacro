@@ -25,7 +25,7 @@
   <joint name="sphere_joint" type="floating">
     <parent link="base_footprint"/>
     <child link="sphere_link"/>
-    <origin rpy="0 0 0" xyz="0 0 0.26"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
 
   <gazebo reference="sphere_link">
@@ -43,16 +43,16 @@
     </collision>
    </gazebo>
 
-  <gazebo>
-    <plugin name="libgazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
-    <ros>
-      <remapping>odom:=sphere_pose</remapping>
-    </ros>
-    <frame_name>base_footprint</frame_name>
-    <body_name>sphere_link</body_name>
-    <update_rate>50</update_rate>
-    <gaussian_noise>0.01</gaussian_noise>
-    </plugin>
-  </gazebo>
+    <gazebo>
+      <plugin name="libgazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
+      <ros>
+        <remapping>odom:=sphere_pose</remapping>
+      </ros>
+      <frame_name>base_footprint</frame_name>
+      <body_name>sphere_link</body_name>
+      <update_rate>50</update_rate>
+      <gaussian_noise>0.01</gaussian_noise>
+      </plugin>
+    </gazebo>
 
 </robot>
