@@ -69,6 +69,11 @@ def generate_launch_description():
         package="bb8_description",
         executable="p3d_tf_broadcast",
     )
+    
+    base_tf_publisher = Node(
+        package="bb8_description",
+        executable="base_transform",
+    )
 
     slam_node = Node(
         package='slam_toolbox',
@@ -78,6 +83,12 @@ def generate_launch_description():
         output='screen'
     )
 
+    head_controller = Node(
+        package="bb8_controllers",
+        executable="head_controller",
+    )
+
+
     return LaunchDescription([
         robot_state_publisher,
         gazebo_launch,
@@ -86,5 +97,7 @@ def generate_launch_description():
         diff_drive_spawner,
         head_controller_spawner,
         sphere_tf_publisher,
+        base_tf_publisher,
         slam_node,
+        head_controller,
     ])

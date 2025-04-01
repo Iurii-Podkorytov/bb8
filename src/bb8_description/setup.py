@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'p3d_tf_broadcast = bb8_description.p3dbroadcaster:main',
+            'base_transform = bb8_description.basetransform:main',
         ],
     },
 )

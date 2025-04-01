@@ -5,6 +5,10 @@ from tf2_ros import TransformBroadcaster
 from geometry_msgs.msg import TransformStamped
 
 class P3DBroadcaster(Node):
+    '''
+    This is needed for the transform between base and sphere, so that it is displayed correctly
+    (simulation only)
+    '''
     def __init__(self):
         super().__init__('p3d_tf_broadcaster')
         
@@ -35,7 +39,7 @@ class P3DBroadcaster(Node):
         # Set the translation (position)
         t.transform.translation.x = msg.pose.pose.position.x
         t.transform.translation.y = msg.pose.pose.position.y
-        t.transform.translation.z = msg.pose.pose.position.z
+        t.transform.translation.z = msg.pose.pose.position.z + 0.26
 
         # Set the rotation (orientation)
         t.transform.rotation = msg.pose.pose.orientation

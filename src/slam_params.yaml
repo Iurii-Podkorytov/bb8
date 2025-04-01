@@ -2,7 +2,7 @@ slam_toolbox:
   ros__parameters:
     map_frame: map
     odom_frame: odom
-    base_frame: base_link
-    scan_topic: scan  # Matches your LIDAR's topic
+    base_frame: base_footprint
+    scan_topic: scan
     mode: mapping
-    use_sim_time: true  # Critical for Gazebo simulation
+    use_sim_time: true

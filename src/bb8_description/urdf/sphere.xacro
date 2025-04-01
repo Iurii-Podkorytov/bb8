@@ -25,16 +25,8 @@
   <joint name="sphere_joint" type="floating">
     <parent link="base_footprint"/>
     <child link="sphere_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0.26"/>
   </joint>
-
-  <!-- <gazebo reference="sphere_link">
-    <mu>0.5</mu>
-    <mu2>0.5</mu2>
-    <collision>
-      <margin>0.01</margin>
-    </collision>
-  </gazebo> -->
 
   <gazebo reference="sphere_link">
     <mu>1.0</mu> 
@@ -44,7 +36,7 @@
         <contact>
           <ode>
             <min_depth>0.001</min_depth>
-            </ode>
+          </ode>
         </contact>
       </surface>
       <margin>0.01</margin>
