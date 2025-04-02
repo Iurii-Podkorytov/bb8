@@ -4,8 +4,8 @@ from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.actions import TimerAction
 import os
+from launch.actions import LogInfo, SetEnvironmentVariable
 
 def generate_launch_description():
     # URDF Path
@@ -19,13 +19,6 @@ def generate_launch_description():
     world_file = PathJoinSubstitution([
         FindPackageShare('bb8_bringup'),
         'worlds', 'test_world.sdf'
-    ])
-
-    # Nav2 Configuration
-    nav2_bringup_dir = FindPackageShare('nav2_bringup').find('nav2_bringup')
-    map_file = PathJoinSubstitution([
-        FindPackageShare('bb8_bringup'),
-        'maps', 'map.yaml'
     ])
 
     # Nodes
@@ -84,19 +77,7 @@ def generate_launch_description():
         executable="base_transform",
         parameters=[{"use_sim_time": True}]
     )
-
-    # Localization (AMCL) and Navigation (Nav2)
-    nav2_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [os.path.join(nav2_bringup_dir, 'launch', 'bringup_launch.py')]
-        ),
-        launch_arguments={
-            'map': map_file,
-            'params_file': 'src/nav2_params.yaml',
-            'use_sim_time': 'True'
-        }.items()
-    )
-
+    
     head_controller = Node(
         package="bb8_controllers",
         executable="head_controller",
@@ -105,12 +86,6 @@ def generate_launch_description():
     hamster_controller = Node(
         package="bb8_controllers",
         executable="hamster_controller",
-        parameters=[{"use_sim_time": True}]
-    )
-
-    velocity_scheduler = Node(
-        package="bb8_controllers",
-        executable="velocity_scheduler",
         parameters=[{"use_sim_time": True}]
     )
 
@@ -123,6 +98,22 @@ def generate_launch_description():
         remappings=[('odometry/filtered', 'odom')]
     )
 
+    nav2_bringup = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([
+                FindPackageShare('nav2_bringup'),
+                'launch', 'bringup_launch.py'
+            ])
+        ]),
+        launch_arguments={
+            'params_file': PathJoinSubstitution(['src/nav2_params.yaml']),
+            'map': PathJoinSubstitution([
+                FindPackageShare('bb8_bringup'),
+                'maps', 'map.yaml'
+                ]),
+        }.items()
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         gazebo_launch,
@@ -133,8 +124,7 @@ def generate_launch_description():
         wheels_controller_spawner,
         head_controller_spawner,
         ekf,
-        nav2_launch,
         head_controller,
-        velocity_scheduler,
         hamster_controller,
+        TimerAction(period=5.0, actions=[nav2_bringup,]),
     ])

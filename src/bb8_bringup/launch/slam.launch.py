@@ -94,7 +94,8 @@ def generate_launch_description():
     hamster_controller = Node(
         package="bb8_controllers",
         executable="hamster_controller",
-        parameters=[{"use_sim_time": True}]
+        parameters=[{"use_sim_time": True}],
+        remappings=[('cmd_vel', 'cmd_vel_smoothed')]
     )
 
     velocity_scheduler = Node(
