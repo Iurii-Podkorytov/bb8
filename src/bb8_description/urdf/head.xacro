@@ -11,12 +11,12 @@
         <color rgba="1 1 1 0.2"/>
       </material>
     </visual>
-    <collision>
+    <!-- <collision>
       <origin xyz="0 0 -0.26" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/head.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-    </collision>
+    </collision> -->
     <xacro:inertial_cylinder mass="0.5" length="0.15" radius="0.15">
         <origin xyz="0 0 0.045" rpy="0 0 0"/>
     </xacro:inertial_cylinder>

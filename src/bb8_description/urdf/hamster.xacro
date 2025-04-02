@@ -124,6 +124,10 @@
     <self_collide>true</self_collide>
     <surface>
       <contact>
+        <ode>
+          <min_depth>0.05</min_depth> 
+          <margin>0.05</margin>
+        </ode>
         <collide_without_contact>false</collide_without_contact>
         <stiffness>1e6</stiffness>
         <damping>2e3</damping>
@@ -141,6 +145,10 @@
     <self_collide>true</self_collide>
     <surface>
       <contact>
+        <ode>
+          <min_depth>0.05</min_depth> 
+          <margin>0.05</margin>
+        </ode>
         <collide_without_contact>false</collide_without_contact>
         <stiffness>1e6</stiffness>
         <damping>2e3</damping>
