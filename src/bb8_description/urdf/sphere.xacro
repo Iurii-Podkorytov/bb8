@@ -35,11 +35,11 @@
     <surface>
       <contact>
         <ode>
-          <min_depth>0.01</min_depth> 
-          <margin>0.02</margin>
+          <min_depth>0.001</min_depth> 
+          <margin>0.001</margin>
         </ode>
-        <stiffness>1e3</stiffness>     <!-- Contact stiffness -->
-        <damping>1e2</damping>         <!-- Contact damping -->
+        <stiffness>1e5</stiffness>     <!-- Contact stiffness -->
+        <damping>1e3</damping>         <!-- Contact damping -->
       </contact>
     </surface>
   </gazebo>

@@ -125,8 +125,8 @@
     <surface>
       <contact>
         <ode>
-          <min_depth>0.05</min_depth> 
-          <margin>0.05</margin>
+          <min_depth>0.001</min_depth> 
+          <margin>0.001</margin>
         </ode>
         <collide_without_contact>false</collide_without_contact>
         <stiffness>1e6</stiffness>
@@ -146,8 +146,8 @@
     <surface>
       <contact>
         <ode>
-          <min_depth>0.05</min_depth> 
-          <margin>0.05</margin>
+          <min_depth>0.001</min_depth> 
+          <margin>0.001</margin>
         </ode>
         <collide_without_contact>false</collide_without_contact>
         <stiffness>1e6</stiffness>

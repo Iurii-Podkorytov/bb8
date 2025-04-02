@@ -44,7 +44,7 @@ class HamsterController(Node):
         # Velocity command subscriber
         self.cmd_vel_sub = self.create_subscription(
             Twist,
-            '/cmd_vel',
+            '/cmd_vel_smoothed',
             self.cmd_vel_callback,
             10)
 

@@ -97,6 +97,12 @@ def generate_launch_description():
         parameters=[{"use_sim_time": True}]
     )
 
+    velocity_scheduler = Node(
+        package="bb8_controllers",
+        executable="velocity_scheduler",
+        parameters=[{"use_sim_time": True}]
+    )
+
     ekf = Node(
         package='robot_localization',
         executable='ekf_node',
@@ -121,5 +127,6 @@ def generate_launch_description():
         ekf, # Does not work
         slam_node,
         head_controller,
+        velocity_scheduler,
         hamster_controller,
     ])
