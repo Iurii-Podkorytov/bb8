@@ -21,13 +21,6 @@ def generate_launch_description():
         'worlds', 'test_world.sdf'
     ])
 
-    # Nav2 Configuration
-    nav2_bringup_dir = FindPackageShare('nav2_bringup').find('nav2_bringup')
-    map_file = PathJoinSubstitution([
-        FindPackageShare('bb8_bringup'),
-        'maps', 'map.yaml'
-    ])
-
     # Nodes
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -85,16 +78,12 @@ def generate_launch_description():
         parameters=[{"use_sim_time": True}]
     )
 
-    # Localization (AMCL) and Navigation (Nav2)
-    nav2_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [os.path.join(nav2_bringup_dir, 'launch', 'bringup_launch.py')]
-        ),
-        launch_arguments={
-            'map': map_file,
-            'params_file': 'src/nav2_params.yaml',
-            'use_sim_time': 'True'
-        }.items()
+    slam_node = Node(
+        package='slam_toolbox',
+        executable='async_slam_toolbox_node',
+        name='slam_toolbox',
+        parameters=['src/slam_params.yaml'],
+        output='screen'
     )
 
     head_controller = Node(
@@ -133,7 +122,7 @@ def generate_launch_description():
         wheels_controller_spawner,
         head_controller_spawner,
         ekf,
-        nav2_launch,
+        slam_node,
         head_controller,
         velocity_scheduler,
         hamster_controller,
