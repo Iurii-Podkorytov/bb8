@@ -19,7 +19,7 @@
       </visual>
       <collision>
         <geometry>
-          <sphere radius="0.005"/>
+          <sphere radius="0.0049"/>
         </geometry>
       </collision>
       <inertial>
@@ -38,34 +38,43 @@
     <joint name="${prefix}_sphere_joint" type="fixed">
       <parent link="${prefix}_virtual"/>
       <child link="${prefix}_sphere"/>
-      <origin xyz="0.2494 0 0" rpy="0 0 0"/>
+      <origin xyz="0.25 0 0" rpy="0 0 0"/>
     </joint>
 
     <!-- Physics properties -->
     <gazebo reference="${prefix}_sphere">
-      <mu>0.001</mu>
-      <mu2>0.001</mu2>
+      <mu>1e-6</mu>
+      <mu2>1e-6</mu2>
       <self_collide>true</self_collide>
-      <contact>
-        <collide_without_contact>false</collide_without_contact>
-        <stiffness>1e3</stiffness>
-        <damping>10</damping>
-      </contact>
+      <surface>
+        <contact>
+          <ode>
+            <min_depth>0.01</min_depth>  <!-- Minimum penetration depth for collision response -->
+            <margin>0.01</margin>        <!-- Distance buffer for collision detection -->
+          </ode>
+          <stiffness>1e3</stiffness>     <!-- Contact stiffness -->
+          <damping>1e2</damping>         <!-- Contact damping -->
+        </contact>
+      </surface>
     </gazebo>
   </xacro:macro>
 
-  <!-- <xacro:spherical_support prefix="support1" angle_1="$(eval pi/4)" angle_2="$(eval 0)"/> -->
-  <!-- <xacro:spherical_support prefix="support2" angle_1="$(eval pi/4)" angle_2="$(eval 4*pi/4)"/> -->
+  <!-- <xacro:spherical_support prefix="support1" angle_1="$(eval pi/4)" angle_2="$(eval 0)"/>
+  <xacro:spherical_support prefix="support2" angle_1="$(eval pi/4)" angle_2="$(eval 4*pi/4)"/> -->
 
-  <xacro:spherical_support prefix="support1" angle_1="$(eval pi/4)" angle_2="$(eval pi/4)"/>
-  <xacro:spherical_support prefix="support2" angle_1="$(eval pi/4)" angle_2="$(eval 3*pi/4)"/>
-  <xacro:spherical_support prefix="support3" angle_1="$(eval pi/4)" angle_2="$(eval 5*pi/4)"/>
-  <xacro:spherical_support prefix="support4" angle_1="$(eval pi/4)" angle_2="$(eval 7*pi/4)"/>
+  <!-- <xacro:spherical_support prefix="support3" angle_1="$(eval pi/4)" angle_2="$(eval pi/4)"/>
+  <xacro:spherical_support prefix="support4" angle_1="$(eval pi/4)" angle_2="$(eval 3*pi/4)"/>
+  <xacro:spherical_support prefix="support5" angle_1="$(eval pi/4)" angle_2="$(eval 5*pi/4)"/>
+  <xacro:spherical_support prefix="support6" angle_1="$(eval pi/4)" angle_2="$(eval 7*pi/4)"/> -->
   
-  <xacro:spherical_support prefix="support5" angle_1="$(eval -pi/3)" angle_2="$(eval 0)"/>
-  <xacro:spherical_support prefix="support6" angle_1="$(eval -pi/3)" angle_2="$(eval pi/2)"/>
-  <xacro:spherical_support prefix="support7" angle_1="$(eval -pi/3)" angle_2="$(eval pi)"/>
-  <xacro:spherical_support prefix="support8" angle_1="$(eval -pi/3)" angle_2="$(eval 3*pi/2)"/>
+  <xacro:spherical_support prefix="support7" angle_1="$(eval -pi/3)" angle_2="$(eval 0)"/>
+  <xacro:spherical_support prefix="support8" angle_1="$(eval -pi/3)" angle_2="$(eval 2*pi/3)"/>
+  <xacro:spherical_support prefix="support9" angle_1="$(eval -pi/3)" angle_2="$(eval 4*pi/3)"/>
+
+  <!-- <xacro:spherical_support prefix="support10" angle_1="$(eval -pi/3)" angle_2="$(eval 0)"/> -->
+  <!-- <xacro:spherical_support prefix="support11" angle_1="$(eval -pi/3)" angle_2="$(eval pi/2)"/> -->
+  <!-- <xacro:spherical_support prefix="support12" angle_1="$(eval -pi/3)" angle_2="$(eval pi)"/> -->
+  <!-- <xacro:spherical_support prefix="support13" angle_1="$(eval -pi/3)" angle_2="$(eval 3*pi/2)"/> -->
 
   <!-- Connect supports to base -->
   <joint name="supports_joint" type="fixed">

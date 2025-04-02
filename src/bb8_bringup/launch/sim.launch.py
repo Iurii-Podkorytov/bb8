@@ -118,8 +118,8 @@ def generate_launch_description():
         # TimerAction(period=5.0, actions=[joint_broad_spawner,]),
         # TimerAction(period=5.5, actions=[wheels_controller_spawner,]),
         # TimerAction(period=6.0, actions=[head_controller_spawner,]),
-        # ekf,
-        # slam_node,
+        ekf, # Does not work
+        slam_node,
         head_controller,
         hamster_controller,
     ])

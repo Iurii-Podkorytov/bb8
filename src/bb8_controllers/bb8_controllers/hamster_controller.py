@@ -17,8 +17,8 @@ class HamsterController(Node):
         self.wheel_separation = 0.3641
         self.wheel_radius = 0.069
         self.sphere_radius = 0.26
-        self.linear_scale = 7.5
-        self.angular_scale = 12
+        self.linear_scale = 7
+        self.angular_scale = 1.5
 
         # Internal state
         self.x = 0.0
@@ -48,8 +48,8 @@ class HamsterController(Node):
             self.cmd_vel_callback,
             10)
 
-        # Timer for odometry updates (30 Hz)
-        self.timer = self.create_timer(1.0/30.0, self.update_odometry)
+        # Timer for odometry updates (50 Hz)
+        self.timer = self.create_timer(1.0/50.0, self.update_odometry)
 
     def cmd_vel_callback(self, msg):
         # Scale velocities
@@ -123,7 +123,8 @@ class HamsterController(Node):
         t.transform.rotation.y = q[1]
         t.transform.rotation.z = q[2]
         t.transform.rotation.w = q[3]
-        self.tf_broadcaster.sendTransform(t)
+        # Turn off odom transform, it will come from ekf
+        # self.tf_broadcaster.sendTransform(t)
 
         # Publish odometry message
         odom = Odometry()

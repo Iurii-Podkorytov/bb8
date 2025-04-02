@@ -21,6 +21,20 @@ class ImuToTf(Node):
         # Extract orientation from IMU
         orientation = msg.orientation
 
+        # Convert quaternion to Euler angles (roll, pitch, yaw)
+        euler = tf_transformations.euler_from_quaternion(
+            [orientation.x, orientation.y, orientation.z, orientation.w],
+            axes='sxyz'  # X: roll, Y: pitch, Z: yaw
+        )
+
+        # Create a new quaternion with only the pitch (Y-axis) component
+        new_quat = tf_transformations.quaternion_from_euler(
+            0.0,  # Roll (X-axis)
+            euler[1],  # Pitch (Y-axis)
+            0.0,  # Yaw (Z-axis)
+            axes='sxyz'
+        )
+
         # Create transform
         t = TransformStamped()
         t.header.stamp = self.get_clock().now().to_msg()
@@ -29,7 +43,10 @@ class ImuToTf(Node):
         t.transform.translation.x = 0.0
         t.transform.translation.y = 0.0
         t.transform.translation.z = self.sphere_radius
-        t.transform.rotation = orientation
+        t.transform.rotation.x = new_quat[0]
+        t.transform.rotation.y = new_quat[1]
+        t.transform.rotation.z = new_quat[2]
+        t.transform.rotation.w = new_quat[3]
 
         # Broadcast transform
         self.tf_broadcaster.sendTransform(t)

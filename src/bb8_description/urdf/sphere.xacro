@@ -29,19 +29,20 @@
   </joint>
 
   <gazebo reference="sphere_link">
-    <mu>1.0</mu> 
-    <mu2>1.0</mu2> 
-    <collision>
-      <surface>
-        <contact>
-          <ode>
-            <min_depth>0.001</min_depth>
-          </ode>
-        </contact>
-      </surface>
-      <margin>0.01</margin>
-    </collision>
-   </gazebo>
+    <mu>10</mu>
+    <mu2>10</mu2>
+    <self_collide>false</self_collide>
+    <surface>
+      <contact>
+        <ode>
+          <min_depth>0.01</min_depth>  <!-- Minimum penetration depth for collision response -->
+          <margin>0.01</margin>        <!-- Distance buffer for collision detection -->
+        </ode>
+        <stiffness>1e3</stiffness>     <!-- Contact stiffness -->
+        <damping>1e2</damping>         <!-- Contact damping -->
+      </contact>
+    </surface>
+  </gazebo>
 
     <gazebo>
       <plugin name="libgazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
