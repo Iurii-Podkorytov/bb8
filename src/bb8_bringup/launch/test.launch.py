@@ -77,20 +77,13 @@ def generate_launch_description():
         ],
         output='screen'
     )
-    
+
     base_tf_publisher = Node(
         package="bb8_description",
         executable="base_transform",
         parameters=[{"use_sim_time": True}]
     )
 
-    slam_node = Node(
-        package='slam_toolbox',
-        executable='async_slam_toolbox_node',
-        name='slam_toolbox',
-        parameters=['src/slam_params.yaml'],
-        output='screen'
-    )
 
     head_controller = Node(
         package="bb8_controllers",
@@ -101,13 +94,6 @@ def generate_launch_description():
         package="bb8_controllers",
         executable="hamster_controller",
         parameters=[{"use_sim_time": True}],
-        remappings=[('cmd_vel', 'cmd_vel_smoothed')]
-    )
-
-    velocity_scheduler = Node(
-        package="bb8_controllers",
-        executable="velocity_scheduler",
-        parameters=[{"use_sim_time": True}]
     )
 
     ekf = Node(
@@ -129,8 +115,6 @@ def generate_launch_description():
         wheels_controller_spawner,
         head_controller_spawner,
         ekf,
-        slam_node,
-        head_controller,
-        velocity_scheduler,
+        # head_controller,
         hamster_controller,
     ])

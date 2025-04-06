@@ -4,7 +4,13 @@
   <xacro:macro name="imu_sensor" params="parent_link sensor_name">
 
     <!-- IMU Link -->
-    <link name="${sensor_name}_link" />
+    <link name="${sensor_name}_link" >
+      <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.01" />
+      </geometry>
+      </visual>
+    </link>
 
     <!-- IMU Joint -->
     <joint name="${sensor_name}_joint" type="fixed">
@@ -45,6 +51,6 @@
     </gazebo>
   </xacro:macro>
 
-  <xacro:imu_sensor parent_link="base_link" sensor_name="imu_base"/>
+  <xacro:imu_sensor parent_link="sphere_center" sensor_name="imu_base"/>
   <!-- <xacro:imu_sensor parent_link="head" sensor_name="imu_head"/> -->
 </robot>

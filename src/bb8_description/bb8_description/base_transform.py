@@ -15,7 +15,7 @@ class ImuToTf(Node):
             10
         )
         self.tf_broadcaster = TransformBroadcaster(self)
-        self.sphere_radius = 0.25
+        self.sphere_radius_o = 0.26
 
     def imu_callback(self, msg):
         # Extract orientation from IMU
@@ -24,12 +24,12 @@ class ImuToTf(Node):
         # Convert quaternion to Euler angles (roll, pitch, yaw)
         euler = tf_transformations.euler_from_quaternion(
             [orientation.x, orientation.y, orientation.z, orientation.w],
-            axes='sxyz'  # X: roll, Y: pitch, Z: yaw
+            axes='sxyz'
         )
 
-        # Create a new quaternion with only the pitch (Y-axis) component
+        # Create a new quaternion without yaw component (the yaw rotation is handled by base_footprint)
         new_quat = tf_transformations.quaternion_from_euler(
-            0.0,  # Roll (X-axis)
+            euler[0],  # Roll (X-axis)
             euler[1],  # Pitch (Y-axis)
             0.0,  # Yaw (Z-axis)
             axes='sxyz'
@@ -39,10 +39,10 @@ class ImuToTf(Node):
         t = TransformStamped()
         t.header.stamp = self.get_clock().now().to_msg()
         t.header.frame_id = 'base_footprint'
-        t.child_frame_id = 'base_link'
+        t.child_frame_id = 'sphere_center'
         t.transform.translation.x = 0.0
         t.transform.translation.y = 0.0
-        t.transform.translation.z = self.sphere_radius
+        t.transform.translation.z = self.sphere_radius_o
         t.transform.rotation.x = new_quat[0]
         t.transform.rotation.y = new_quat[1]
         t.transform.rotation.z = new_quat[2]

@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
+
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
   <!-- Outer Sphere Link -->
   <link name="sphere_link">
     <visual>
       <geometry>
-        <mesh filename="file:///$(find bb8_description)/meshes/sphere.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///$(find bb8_description)/meshes/sphere.stl"/>
       </geometry>
       <material name="white_transparent">
         <color rgba="1 1 1 0.2"/>
@@ -12,7 +14,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="file:///$(find bb8_description)/meshes/sphere.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///$(find bb8_description)/meshes/sphere.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -23,37 +25,24 @@
 
   <!-- Joint to Connect Sphere and Hamster -->
   <joint name="sphere_joint" type="floating">
-    <parent link="base_footprint"/>
+    <parent link="sphere_center"/>
     <child link="sphere_link"/>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
 
   <gazebo reference="sphere_link">
-    <mu>10</mu>
-    <mu2>10</mu2>
+    <mu>10.0</mu>
+    <mu2>10.0</mu2>
     <self_collide>false</self_collide>
     <surface>
       <contact>
         <ode>
-          <min_depth>0.001</min_depth> 
-          <margin>0.001</margin>
+          <min_depth>1</min_depth> 
+          <margin>1</margin>
         </ode>
-        <stiffness>1e5</stiffness>     <!-- Contact stiffness -->
-        <damping>1e3</damping>         <!-- Contact damping -->
+        <stiffness>1e-10</stiffness>
+        <damping>1e10</damping>
       </contact>
     </surface>
   </gazebo>
-
-    <gazebo>
-      <plugin name="libgazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
-      <ros>
-        <remapping>odom:=sphere_pose</remapping>
-      </ros>
-      <frame_name>base_footprint</frame_name>
-      <body_name>sphere_link</body_name>
-      <update_rate>50</update_rate>
-      <gaussian_noise>0.01</gaussian_noise>
-      </plugin>
-    </gazebo>
 
 </robot>

@@ -44,7 +44,7 @@ def generate_launch_description():
     spawn_entity = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
-        arguments=['-topic', 'robot_description', '-entity', 'bb8', '-z', '0.26'],
+        arguments=['-topic', 'robot_description', '-entity', 'bb8'],
         output='screen'
     )
 
@@ -67,9 +67,15 @@ def generate_launch_description():
     )
 
     sphere_tf_publisher = Node(
-        package="bb8_description",
-        executable="p3d_tf_broadcast",
-        parameters=[{"use_sim_time": True}]
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=[
+            '0', '0', '-0.26',  # Translation (x y z)
+            '0', '0', '0', '1', # Rotation (quaternion: x y z w)
+            'sphere_center',    # Parent frame
+            'sphere_link'       # Child frame
+        ],
+        output='screen'
     )
     
     base_tf_publisher = Node(

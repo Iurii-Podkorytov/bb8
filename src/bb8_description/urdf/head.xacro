@@ -39,7 +39,7 @@
 
   <!-- Revolute joints with limits for full ball joint motion -->
   <joint name="head_x_joint" type="revolute">
-    <parent link="base_link"/>
+    <parent link="sphere_center"/>
     <child link="head_x_link"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <axis xyz="1 0 0"/>

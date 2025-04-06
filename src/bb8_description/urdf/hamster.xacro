@@ -2,18 +2,25 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <!-- Base Footprint -->
+  <!-- This frame is always at the fround, represents robot position and orientation in 2d -->
   <link name="base_footprint" />
+
+  <link name="sphere_center" />
+
+  <!-- <link name="base_roll" /> -->
+  <!-- <link name="base_pitch" /> -->
+  
   <!-- Base Link -->
   <link name="base_link">
     <visual>
-      <origin xyz="0 0 -${0.1458 + 0.025}" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <cylinder length="0.05" radius="0.09" />
       </geometry>
       <material name="blue"/>
     </visual>
     <xacro:inertial_cylinder mass="0.5" length="0.05" radius="0.09">
-      <origin xyz="0 0 -${0.1458 + 0.025}" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
     </xacro:inertial_cylinder>
   </link>
 
@@ -33,89 +40,76 @@
   <!-- Left Wheel -->
   <link name="left_wheel">
     <visual>
-      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <xacro:inertial_sphere mass="0.05" radius="0.076">
-      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
     </xacro:inertial_sphere>
   </link>
 
-  <link name="wheel_connector" >
-    <visual>
-      <geometry>
-        <cylinder length="0.01" radius="0.01" />
-      </geometry>
-      <material name="blue"/>
-    </visual>
-    <xacro:inertial_cylinder mass="0.01" length="0.01" radius="0.01">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-    </xacro:inertial_cylinder>
-  </link>
 
   <!-- Right Wheel -->
   <link name="right_wheel">
     <visual>
-      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <xacro:inertial_sphere mass="0.05" radius="0.076">
-      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
     </xacro:inertial_sphere>
   </link>
 
   <!-- Joints -->
-  <joint name="base_joint" type="fixed">
-  <!-- It should be floating, but for some reason it does not work with it -->
-  <!-- Anyway, it would be converted to fixed when loading urdf to gazebo -->
-  <!-- <joint name="base_joint" type="floating"> --> 
+  <joint name="base_footprint_joint" type="fixed">
     <parent link="base_footprint" />
-    <child link="base_link" />
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <child link="sphere_center" />
+    <origin xyz="0 0 ${sphere_radius_o}" rpy="0 0 0"/>
   </joint>
 
-  <joint name="wheel_connector_joint" type="fixed">
-    <parent link="base_link" />
-    <child link="wheel_connector" />
-    <origin xyz="0 0 0" rpy="0 0 ${pi/2}"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="sphere_center" />
+    <child link="base_link" />
+    <origin xyz="0 0 -0.1458" rpy="0 0 0"/>
   </joint>
 
   <joint name="counterweight_joint" type="fixed">
     <parent link="base_link" />
     <child link="counterweight" />
-    <origin xyz="0 0 -0.21" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.03" rpy="0 0 0"/>
   </joint>
 
   <joint name="left_wheel_joint" type="continuous">
-    <parent link="wheel_connector"/>
+    <parent link="base_link"/>
     <child link="left_wheel"/>
-    <origin xyz="${0.3437/2} 0 -0.1458" rpy="0 0 0"/>
-    <axis xyz="1 0 0"/>
+    <origin xyz="0 ${wheel_separation/2}  0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
   </joint>
 
   <joint name="right_wheel_joint" type="continuous">
-    <parent link="wheel_connector"/>
+    <parent link="base_link"/>
     <child link="right_wheel"/>
-    <origin xyz="-${0.3437/2} 0 -0.1458" rpy="0 0 0"/>
-    <axis xyz="1 0 0"/>
+    <origin xyz="0 -${wheel_separation/2} 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
   </joint>
 
 
