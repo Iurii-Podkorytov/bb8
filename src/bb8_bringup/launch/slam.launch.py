@@ -70,7 +70,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         arguments=[
-            '0', '0', '-0.26',  # Translation (x y z)
+            '0', '0', '0',  # Translation (x y z)
             '0', '0', '0', '1', # Rotation (quaternion: x y z w)
             'sphere_center',    # Parent frame
             'sphere_link'       # Child frame

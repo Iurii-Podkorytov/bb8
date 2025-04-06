@@ -7,9 +7,6 @@
 
   <link name="sphere_center" />
 
-  <!-- <link name="base_roll" /> -->
-  <!-- <link name="base_pitch" /> -->
-  
   <!-- Base Link -->
   <link name="base_link">
     <visual>
@@ -57,7 +54,6 @@
     </xacro:inertial_sphere>
   </link>
 
-
   <!-- Right Wheel -->
   <link name="right_wheel">
     <visual>
@@ -84,7 +80,6 @@
     <child link="sphere_center" />
     <origin xyz="0 0 ${sphere_radius_o}" rpy="0 0 0"/>
   </joint>
-
 
   <joint name="base_joint" type="fixed">
     <parent link="sphere_center" />

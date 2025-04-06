@@ -70,7 +70,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         arguments=[
-            '0', '0', '-0.26',  # Translation (x y z)
+            '0', '0', '0',     # Translation (x y z)
             '0', '0', '0', '1', # Rotation (quaternion: x y z w)
             'sphere_center',    # Parent frame
             'sphere_link'       # Child frame
@@ -94,6 +94,7 @@ def generate_launch_description():
         package="bb8_controllers",
         executable="hamster_controller",
         parameters=[{"use_sim_time": True}],
+        remappings=[('odom', 'odom_wheels')]
     )
 
     ekf = Node(
@@ -114,7 +115,7 @@ def generate_launch_description():
         joint_broad_spawner,
         wheels_controller_spawner,
         head_controller_spawner,
-        ekf,
-        # head_controller,
+        # ekf,
+        head_controller,
         hamster_controller,
     ])

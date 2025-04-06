@@ -17,8 +17,9 @@ class HamsterController(Node):
         self.wheel_separation = 0.3641
         self.wheel_radius = 0.069
         self.sphere_radius = 0.26
-        self.linear_scale = 7
-        self.angular_scale = 1.5
+
+        self.angular_scale = 2.5
+        self.linear_scale = 1.5
 
         # Internal state
         self.x = 0.0
@@ -29,6 +30,8 @@ class HamsterController(Node):
         self.last_time = self.get_clock().now()
         self.initialized = False
 
+        self.declare_parameter('publish_tf', True)    # Publish TF transform
+
         # Wheel velocity command publishers
         self._command_publisher = self.create_publisher(Float64MultiArray, '/wheels_controller/commands', 10)
 
@@ -38,7 +41,7 @@ class HamsterController(Node):
             '/joint_states',
             self.joint_state_callback,
             10)
-        self.odom_pub = self.create_publisher(Odometry, '/odom_wheels', 10)
+        self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
         self.tf_broadcaster = TransformBroadcaster(self)
 
         # Velocity command subscriber
@@ -52,13 +55,9 @@ class HamsterController(Node):
         self.timer = self.create_timer(1.0/50.0, self.update_odometry)
 
     def cmd_vel_callback(self, msg):
-        # Scale velocities
-        scaled_linear = msg.linear.x
-        scaled_angular = msg.angular.z
-
         # Convert to wheel velocities
-        left_vel = (2 * scaled_linear - self.wheel_separation * scaled_angular) / (2 * self.wheel_radius)
-        right_vel = (2 * scaled_linear + self.wheel_separation * scaled_angular) / (2 * self.wheel_radius)
+        left_vel = (2 * msg.linear.x - self.wheel_separation * msg.angular.z) / (2 * self.wheel_radius)
+        right_vel = (2 * msg.linear.x + self.wheel_separation * msg.angular.z) / (2 * self.wheel_radius)
 
         # Publish to wheel controllers
         command_msg = Float64MultiArray()
@@ -86,60 +85,69 @@ class HamsterController(Node):
             return
 
         current_time = self.get_clock().now()
-        dt = (current_time - self.last_time).nanoseconds * 1e-9
-
-        # Calculate wheel displacements
-        delta_left = (self.current_left_pos - self.prev_left_pos) * self.wheel_radius * self.linear_scale
-        delta_right = (self.current_right_pos - self.prev_right_pos) * self.wheel_radius * self.linear_scale
-
-        # Compute motion
-        linear = (delta_left + delta_right) / 2.0
-        angular = (delta_right - delta_left) / (self.wheel_separation * self.angular_scale)
-
-        # Integrate pose
-        delta_x = linear * math.cos(self.theta) * dt
-        delta_y = linear * math.sin(self.theta) * dt
-        delta_theta = angular * dt
-
-        self.x += delta_x
-        self.y += delta_y
-        self.theta += delta_theta
-
-        # Update previous positions
-        self.prev_left_pos = self.current_left_pos
-        self.prev_right_pos = self.current_right_pos
+        delta_time = (current_time - self.last_time).nanoseconds / 1e9
         self.last_time = current_time
 
-        # Publish transform
-        t = TransformStamped()
-        t.header.stamp = current_time.to_msg()
-        t.header.frame_id = 'odom'
-        t.child_frame_id = 'base_footprint'
-        t.transform.translation.x = self.x
-        t.transform.translation.y = self.y
-        t.transform.translation.z = 0.0
+        # Calculate wheel displacements
+        delta_left = (self.current_left_pos - self.prev_left_pos) * self.wheel_radius
+        delta_right = (self.current_right_pos - self.prev_right_pos) * self.wheel_radius
+
+        # Update previous positions for next iteration
+        self.prev_left_pos = self.current_left_pos
+        self.prev_right_pos = self.current_right_pos
+
+        # Compute odometry
+        delta_theta = (delta_right - delta_left) / self.wheel_separation / self.angular_scale
+        delta_s = (delta_left + delta_right) / 2.0 / self.linear_scale
+
+        # Calculate average angle during the interval
+        theta_avg = self.theta + delta_theta / 2.0
+
+        # Update position and orientation
+        self.x += delta_s * math.cos(theta_avg)
+        self.y += delta_s * math.sin(theta_avg)
+        self.theta += delta_theta
+
+        # Create quaternion from yaw
         q = tf_transformations.quaternion_from_euler(0, 0, self.theta)
-        t.transform.rotation.x = q[0]
-        t.transform.rotation.y = q[1]
-        t.transform.rotation.z = q[2]
-        t.transform.rotation.w = q[3]
-        # Turn off odom transform, it will come from ekf
-        # self.tf_broadcaster.sendTransform(t)
 
         # Publish odometry message
         odom = Odometry()
-        odom.header = t.header
-        odom.child_frame_id = t.child_frame_id
+        odom.header.stamp = current_time.to_msg()
+        odom.header.frame_id = 'odom'
+        odom.child_frame_id = 'base_footprint'
+
         odom.pose.pose.position.x = self.x
         odom.pose.pose.position.y = self.y
-        odom.pose.pose.orientation.z = math.sin(self.theta / 2)
-        odom.pose.pose.orientation.w = math.cos(self.theta / 2)
-        try:
-            odom.twist.twist.linear.x = linear / dt
-            odom.twist.twist.angular.z = angular / dt
-            self.odom_pub.publish(odom)
-        except ZeroDivisionError as e:
-            self.get_logger().error('dt = 0')
+        odom.pose.pose.position.z = 0.0
+        odom.pose.pose.orientation.x = q[0]
+        odom.pose.pose.orientation.y = q[1]
+        odom.pose.pose.orientation.z = q[2]
+        odom.pose.pose.orientation.w = q[3]
+
+        # Calculate linear and angular velocities
+        linear_velocity = delta_s / delta_time
+        angular_velocity = delta_theta / delta_time
+
+        odom.twist.twist.linear.x = linear_velocity
+        odom.twist.twist.angular.z = angular_velocity
+
+        self.odom_pub.publish(odom)
+
+        # Publish transform
+        if self.get_parameter('publish_tf').value:
+            transform = TransformStamped()
+            transform.header.stamp = current_time.to_msg()
+            transform.header.frame_id = 'odom'
+            transform.child_frame_id = 'base_footprint'
+            transform.transform.translation.x = self.x
+            transform.transform.translation.y = self.y
+            transform.transform.translation.z = 0.0
+            transform.transform.rotation.x = q[0]
+            transform.transform.rotation.y = q[1]
+            transform.transform.rotation.z = q[2]
+            transform.transform.rotation.w = q[3]
+            self.tf_broadcaster.sendTransform(transform)
 
     # Properties to track wheel positions
     @property
