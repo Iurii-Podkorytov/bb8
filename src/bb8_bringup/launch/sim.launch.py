@@ -103,9 +103,15 @@ def generate_launch_description():
     hamster_controller = Node(
         package="bb8_controllers",
         executable="hamster_controller",
+        parameters=[{"use_sim_time": True}],
+    )
+
+    wheels_odom = Node(
+        package="bb8_controllers",
+        executable="wheels_odom",
         parameters=[{
             "use_sim_time": True, 
-            # "publish_tf": False,
+            "publish_tf": False,
             }],
         remappings=[('odom', 'odom_wheels')]
     )
@@ -147,5 +153,6 @@ def generate_launch_description():
         ekf,
         head_controller,
         hamster_controller,
+        wheels_odom,
         TimerAction(period=5.0, actions=[nav2_bringup,]),
     ])

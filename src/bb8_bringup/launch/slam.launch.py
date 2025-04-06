@@ -111,17 +111,17 @@ def generate_launch_description():
     hamster_controller = Node(
         package="bb8_controllers",
         executable="hamster_controller",
-        parameters=[{
-            "use_sim_time": True, 
-            # "publish_tf": False,
-            }],
-        remappings=[('odom', 'odom_wheels')]
+        parameters=[{"use_sim_time": True}],
     )
 
-    velocity_scheduler = Node(
+    wheels_odom = Node(
         package="bb8_controllers",
-        executable="velocity_scheduler",
-        parameters=[{"use_sim_time": True}]
+        executable="wheels_odom",
+        parameters=[{
+            "use_sim_time": True, 
+            "publish_tf": False,
+            }],
+        remappings=[('odom', 'odom_wheels')]
     )
 
     ekf = Node(
@@ -145,6 +145,6 @@ def generate_launch_description():
         ekf,
         slam_node,
         head_controller,
-        velocity_scheduler,
+        wheels_odom,
         hamster_controller,
     ])
