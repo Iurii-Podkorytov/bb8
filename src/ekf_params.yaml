@@ -25,12 +25,12 @@ ekf_filter_node:
                   true,  true, true,
                   false, false, false,
                   true,  true,  true,
-                  false,  false,  false]
+                  true,  true,  true,]
     imu0_remove_gravitational_acceleration: true
 
     # TF settings
     publish_tf: true
-    map_frame: map
+    map_frame: odom
     odom_frame: odom
     base_link_frame: base_footprint
     world_frame: odom

@@ -66,17 +66,28 @@ def generate_launch_description():
         arguments=["head_controller"],
     )
 
-    sphere_tf_publisher = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        arguments=[
-            '0', '0', '0',     # Translation (x y z)
-            '0', '0', '0', '1', # Rotation (quaternion: x y z w)
-            'sphere_center',    # Parent frame
-            'sphere_link'       # Child frame
-        ],
-        output='screen'
-    )
+    # Static transform so sphere is visible in rviz 
+    sphere_tf_publisher = [Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            arguments=['0', '0', '0', '0', '0', '0', '1', 'sphere_center', 'sphere_yaw'],
+            output='screen',
+            name='sphere_yaw_tf'
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            arguments=['0', '0', '0', '0', '0', '0', '1', 'sphere_yaw', 'sphere_pitch'],
+            output='screen',
+            name='sphere_pitch_tf'
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            arguments=['0', '0', '0', '0', '0', '0', '1', 'sphere_pitch', 'sphere'],
+            output='screen',
+            name='sphere_tf'
+        ),]
 
     base_tf_publisher = Node(
         package="bb8_description",
@@ -94,6 +105,15 @@ def generate_launch_description():
         package="bb8_controllers",
         executable="hamster_controller",
         parameters=[{"use_sim_time": True}],
+    )
+
+    wheels_odom = Node(
+        package="bb8_controllers",
+        executable="wheels_odom",
+        parameters=[{
+            "use_sim_time": True, 
+            "publish_tf": False,
+            }],
         remappings=[('odom', 'odom_wheels')]
     )
 
@@ -110,12 +130,13 @@ def generate_launch_description():
         robot_state_publisher,
         gazebo_launch,
         spawn_entity,
-        sphere_tf_publisher,
+        *sphere_tf_publisher,
         base_tf_publisher,
         joint_broad_spawner,
         wheels_controller_spawner,
         head_controller_spawner,
-        # ekf,
+        ekf,
         head_controller,
         hamster_controller,
+        wheels_odom,
     ])

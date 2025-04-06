@@ -25,6 +25,7 @@ setup(
         'console_scripts': [
             'head_controller = bb8_controllers.head_controller:main',
             'hamster_controller = bb8_controllers.hamster_controller:main',
+            'wheels_odom = bb8_controllers.wheels_odom:main',
             'velocity_scheduler = bb8_controllers.velocity_scheduler:main',
         ],
     },

@@ -2,22 +2,22 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <!-- Dummy links for rotational joints -->
-  <link name="link_yaw">
+  <link name="sphere_yaw">
     <inertial>
       <mass value="0.001"/>
       <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
     </inertial>
   </link>
 
-  <link name="link_pitch">
+  <link name="sphere_pitch">
     <inertial>
       <mass value="0.001"/>
       <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
     </inertial>
   </link>
 
-  <!-- Outer Sphere Link -->
-  <link name="sphere_link">
+  <!-- Sphere Shell Link -->
+  <link name="sphere">
     <visual>
       <geometry>
         <mesh filename="file:///$(find bb8_description)/meshes/sphere.stl"/>
@@ -38,28 +38,28 @@
   </link>
 
   <!-- Continuous joints -->
-  <joint name="yaw_joint" type="continuous">
+  <joint name="sphere_yaw_joint" type="continuous">
     <parent link="sphere_center"/>
-    <child link="link_yaw"/>
+    <child link="sphere_yaw"/>
     <axis xyz="0 0 1"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
-  <joint name="pitch_joint" type="continuous">
-    <parent link="link_yaw"/>
-    <child link="link_pitch"/>
+  <joint name="sphere_pitch_joint" type="continuous">
+    <parent link="sphere_yaw"/>
+    <child link="sphere_pitch"/>
     <axis xyz="0 1 0"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
-  <joint name="roll_joint" type="continuous">
-    <parent link="link_pitch"/>
-    <child link="sphere_link"/>
+  <joint name="sphere_roll_joint" type="continuous">
+    <parent link="sphere_pitch"/>
+    <child link="sphere"/>
     <axis xyz="1 0 0"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
-  <gazebo reference="sphere_link">
+  <gazebo reference="sphere">
     <mu>10.0</mu>
     <mu2>10.0</mu2>
     <self_collide>false</self_collide>

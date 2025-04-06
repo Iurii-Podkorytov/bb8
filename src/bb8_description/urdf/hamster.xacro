@@ -39,14 +39,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
-        <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" />
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
-        <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" />
       </geometry>
     </collision>
     <xacro:inertial_sphere mass="0.05" radius="0.076">
@@ -59,14 +59,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
-        <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" />
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
       <geometry>
-        <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="file:///$(find bb8_description)/meshes/wheel.stl" />
       </geometry>
     </collision>
     <xacro:inertial_sphere mass="0.05" radius="0.076">
