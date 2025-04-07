@@ -16,11 +16,6 @@ def generate_launch_description():
         ' ', xacro_file
     ])
 
-    world_file = PathJoinSubstitution([
-        FindPackageShare('bb8_bringup'),
-        'worlds', 'test_world.sdf'
-    ])
-
     # Nodes
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -37,7 +32,9 @@ def generate_launch_description():
         ]),
         launch_arguments=[
             ('pause', 'false'),
-            ('world', world_file)
+            ('world', PathJoinSubstitution([
+                FindPackageShare('bb8_bringup'),
+                'worlds', 'test_world.sdf']))
             ]
     )
 
@@ -60,10 +57,16 @@ def generate_launch_description():
         arguments=["joint_broad"],
     )
 
-    head_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["head_controller"],
+    head_pid_controller = Node(
+        package="bb8_controllers",
+        executable="head_pid_controller",
+        parameters=[
+            PathJoinSubstitution([
+                FindPackageShare('bb8_controllers'),
+                'config', 'head_pid.yaml'
+            ]), {"use_sim_time": True}
+        ],
+        output='screen'
     )
 
     sphere_tf_publisher = [Node(
@@ -149,10 +152,10 @@ def generate_launch_description():
         base_tf_publisher,
         joint_broad_spawner,
         wheels_controller_spawner,
-        head_controller_spawner,
+        head_pid_controller,
         ekf,
         head_controller,
         hamster_controller,
         wheels_odom,
-        TimerAction(period=5.0, actions=[nav2_bringup,]),
+        nav2_bringup,
     ])
