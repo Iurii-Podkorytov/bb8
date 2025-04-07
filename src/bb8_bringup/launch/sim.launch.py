@@ -57,16 +57,10 @@ def generate_launch_description():
         arguments=["joint_broad"],
     )
 
-    head_pid_controller = Node(
-        package="bb8_controllers",
-        executable="head_pid_controller",
-        parameters=[
-            PathJoinSubstitution([
-                FindPackageShare('bb8_controllers'),
-                'config', 'head_pid.yaml'
-            ]), {"use_sim_time": True}
-        ],
-        output='screen'
+    head_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["head_controller"],
     )
 
     sphere_tf_publisher = [Node(
@@ -98,9 +92,16 @@ def generate_launch_description():
         parameters=[{"use_sim_time": True}]
     )
     
-    head_controller = Node(
+    head_pid_controller = Node(
         package="bb8_controllers",
-        executable="head_controller",
+        executable="head_pid_controller",
+        parameters=[
+            PathJoinSubstitution([
+                FindPackageShare('bb8_controllers'),
+                'config', 'head_pid.yaml'
+            ]), {"use_sim_time": True}
+        ],
+        output='screen'
     )
 
     hamster_controller = Node(
@@ -132,7 +133,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
                 FindPackageShare('nav2_bringup'),
-                'launch', 'localization_launch.py'
+                'launch', 'bringup_launch.py'
             ])
         ]),
         launch_arguments={
@@ -152,10 +153,10 @@ def generate_launch_description():
         base_tf_publisher,
         joint_broad_spawner,
         wheels_controller_spawner,
-        head_pid_controller,
+        head_controller_spawner,
         ekf,
-        head_controller,
+        head_pid_controller,
         hamster_controller,
         wheels_odom,
-        nav2_bringup,
+        TimerAction(period=5.0, actions=[nav2_bringup,]),
     ])
