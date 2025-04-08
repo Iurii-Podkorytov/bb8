@@ -5,7 +5,6 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 import os
-from launch.actions import LogInfo, SetEnvironmentVariable
 
 def generate_launch_description():
     # URDF Path
@@ -98,7 +97,7 @@ def generate_launch_description():
         parameters=[
             PathJoinSubstitution([
                 FindPackageShare('bb8_controllers'),
-                'config', 'head_pid.yaml'
+                'config', 'controllers_params.yaml'
             ]), {"use_sim_time": True}
         ],
         output='screen'
@@ -125,7 +124,12 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=['src/ekf_params.yaml'],
+        parameters=[
+            PathJoinSubstitution([
+                FindPackageShare('bb8_controllers'),
+                'config', 'ekf_params.yaml'
+            ])
+        ],
         remappings=[('odometry/filtered', 'odom')]
     )
 
@@ -137,9 +141,12 @@ def generate_launch_description():
             ])
         ]),
         launch_arguments={
-            'params_file': PathJoinSubstitution(['src/nav2_params.yaml']),
+            'params_file': PathJoinSubstitution([
+                    FindPackageShare('bb8_navigation'),
+                    'config', 'nav2_params.yaml'
+            ]),
             'map': PathJoinSubstitution([
-                FindPackageShare('bb8_bringup'),
+                FindPackageShare('bb8_navigation'),
                 'maps', 'map.yaml'
                 ]),
         }.items()
@@ -158,5 +165,5 @@ def generate_launch_description():
         head_pid_controller,
         hamster_controller,
         wheels_odom,
-        TimerAction(period=5.0, actions=[nav2_bringup,]),
+        nav2_bringup,
     ])

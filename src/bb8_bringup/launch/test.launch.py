@@ -98,7 +98,7 @@ def generate_launch_description():
         parameters=[
             PathJoinSubstitution([
                 FindPackageShare('bb8_controllers'),
-                'config', 'head_pid.yaml'
+                'config', 'controllers_params.yaml'
             ]), {"use_sim_time": True}
         ],
         output='screen'
@@ -115,9 +115,9 @@ def generate_launch_description():
         executable="wheels_odom",
         parameters=[{
             "use_sim_time": True, 
-            "publish_tf": False,
+            # "publish_tf": False,
             }],
-        remappings=[('odom', 'odom_wheels')]
+        # remappings=[('odom', 'odom_wheels')]
     )
 
     ekf = Node(
@@ -125,7 +125,12 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=['src/ekf_params.yaml'],
+        parameters=[
+            PathJoinSubstitution([
+                FindPackageShare('bb8_controllers'),
+                'config', 'ekf_params.yaml'
+            ])
+        ],
         remappings=[('odometry/filtered', 'odom')]
     )
 
@@ -138,7 +143,7 @@ def generate_launch_description():
         joint_broad_spawner,
         wheels_controller_spawner,
         head_controller_spawner,
-        ekf,
+        # ekf,
         head_pid_controller,
         hamster_controller,
         wheels_odom,

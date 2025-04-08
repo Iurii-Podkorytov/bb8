@@ -39,7 +39,7 @@
 
     <gazebo>
         <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
-            <parameters>$(find bb8_controllers)/config/controllers.yaml</parameters>
+            <parameters>$(find bb8_controllers)/config/controllers_params.yaml</parameters>
         </plugin>
     </gazebo>
  
