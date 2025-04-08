@@ -2,28 +2,27 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 import spidev
-import time
 
 class PSXJoyNode(Node):
     def __init__(self):
         super().__init__('ps2_joy_node')
         
-        # ROS2 publisher
+        # Publisher and timer
         self.publisher = self.create_publisher(Joy, 'joy', 10)
-        self.timer = self.create_timer(0.05, self.timer_callback)  # 20Hz
+        self.timer = self.create_timer(0.02, self.timer_callback)  # 50Hz for better responsiveness
         
-        # SPI setup
+        # SPI configuration
         self.spi = spidev.SpiDev()
         self.spi.open(0, 0)  # SPI0 CE0
-        self.spi.max_speed_hz = 250000  # Adjust if needed
+        self.spi.max_speed_hz = 100000  # Lower speed for reliability
         
-        # PS2 controller configuration
-        self.configure_analog_mode()
+        # PS2 controller setup
+        self.configure_controller()
         
-        # Poll command for analog mode (from PsxNewLib)
+        # Poll command for analog mode
         self.poll_cmd = [0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         
-        # Button mapping (adapted from PsxNewLib)
+        # Button mapping (adapted for non-DualShock2 controllers)
         self.button_map = {
             'select': 0b00000001,
             'l3':     0b00000010,
@@ -43,46 +42,49 @@ class PSXJoyNode(Node):
             'square':  0b10000000
         }
 
-    def configure_analog_mode(self):
-        """Configure controller for analog mode (adapted from PsxNewLib)"""
+    def configure_controller(self):
+        """Force analog mode configuration"""
         # Enter config mode
         self.spi.xfer2([0x43, 0x00, 0x5A, 0x5A, 0x5A, 0x5A, 0x00, 0x00, 0x00, 0x00])
         # Enable analog mode
         self.spi.xfer2([0x44, 0x00, 0x01, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
         # Exit config mode
         self.spi.xfer2([0x43, 0x00, 0x5A, 0x5A, 0x5A, 0x5A, 0x00, 0x00, 0x00, 0x00])
+        # Set vibration (some controllers require this)
+        self.spi.xfer2([0x4D, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
 
     def read_controller(self):
-        """Read controller data (based on PsxNewLib's read() function)"""
+        """Read controller data with improved parsing"""
         response = self.spi.xfer2(self.poll_cmd)
         
-        if len(response) < 9:
-            self.get_logger().warn("Invalid response length")
+        if len(response) < 5:
             return None
         
-        # Parse button data (bytes 3-8)
-        buttons = ((response[4] << 8) | response[3])  # Combine 2 bytes
+        # Parse buttons (byte 3-4 for digital buttons)
+        buttons = ((response[4] << 8) | response[3])  # 16-bit button data
         
-        # Check protocol type (adapted from PsxNewLib's logic)
-        if len(response) >= 21 and (response[1] & 0xF0) == 0x70:
-            # DualShock2 analog mode
-            analog = {
-                'lx': response[7],
-                'ly': response[8],
-                'rx': response[5],
-                'ry': response[6],
-                'pressure': response[9:21]  # Pressure-sensitive buttons
-            }
+        # Check for analog mode (even if not DualShock2)
+        if len(response) >= 9:
+            # Analog stick data starts at byte 5 (some controllers send 9 bytes)
+            lx = response[5]
+            ly = response[6]
+            rx = response[7]
+            ry = response[8]
         else:
-            # Digital mode or basic analog
-            analog = {
-                'lx': 128,
-                'ly': 128,
-                'rx': 128,
-                'ry': 128
-            }
+            # Fallback to digital (though analog sticks should still work)
+            lx = ly = rx = ry = 128
+
+        self.get_logger().info(f"Dec: {list(response)}")
         
-        return {'buttons': buttons, 'analog': analog}
+        return {
+            'buttons': buttons,
+            'analog': {
+                'lx': lx,
+                'ly': ly,
+                'rx': rx,
+                'ry': ry
+            }
+        }
 
     def timer_callback(self):
         data = self.read_controller()
