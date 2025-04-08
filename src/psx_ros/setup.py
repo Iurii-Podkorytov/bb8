@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'psx_joy_node = psx_ros.psx_joy_node:main',
         ],
     },
 )
