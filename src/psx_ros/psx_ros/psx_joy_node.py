@@ -1,10 +1,11 @@
 import rclpy
+from rclpy.node import Node
 from sensor_msgs.msg import Joy
 import spidev
 
-class PSXJoyNode:
+class PSXJoyNode(Node):
     def __init__(self):
-        self.node = rclpy.create_node('ps2_joy_node')
+        super().__init__('ps2_joy_node')  # Initialize the node
         self.publisher = self.node.create_publisher(Joy, 'joy', 10)
         self.timer = self.node.create_timer(0.1, self.timer_callback)
 
@@ -33,7 +34,7 @@ class PSXJoyNode:
 
     def timer_callback(self):
         data = self.read_controller()
-        # Map buttons to Joy message (example for 16 buttons)
+
         msg = Joy()
         msg.buttons = [  # Modify based on your controller's button mapping
             (data['buttons'][0] >> 0) & 1,  # Select
@@ -46,6 +47,7 @@ class PSXJoyNode:
             (data['buttons'][1] >> 7) & 1,  # D-Pad Left
             # Add remaining buttons...
         ]
+        
         # Map analog axes (convert 0-255 to -1.0 to 1.0)
         msg.axes = [
             (data['analog']['lx'] - 128) / 128.0,
