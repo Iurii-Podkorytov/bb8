@@ -19,7 +19,7 @@ class PSXJoyNode(Node):
         # PS2 controller setup
         self.configure_controller()
         
-        # Poll command for analog mode
+        self.enter_config = [0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         self.poll_cmd = [0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         
         # Button mapping (adapted for non-DualShock2 controllers)
@@ -60,19 +60,11 @@ class PSXJoyNode(Node):
         if len(response) < 5:
             return None
         
-        # Parse buttons (byte 3-4 for digital buttons)
-        buttons = ((response[4] << 8) | response[3])  # 16-bit button data
-        
-        # Check for analog mode (even if not DualShock2)
-        if len(response) >= 9:
-            # Analog stick data starts at byte 5 (some controllers send 9 bytes)
-            lx = response[5]
-            ly = response[6]
-            rx = response[7]
-            ry = response[8]
-        else:
-            # Fallback to digital (though analog sticks should still work)
-            lx = ly = rx = ry = 128
+        buttons = ((response[4] << 8) | response[3]) 
+        lx = response[5]
+        ly = response[6]
+        rx = response[7]
+        ry = response[8]
 
         self.get_logger().info(f"Dec: {list(response)}")
         
