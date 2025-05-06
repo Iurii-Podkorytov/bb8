@@ -52,5 +52,5 @@
   </xacro:macro>
 
   <xacro:imu_sensor parent_link="sphere_center" sensor_name="imu_base"/>
-  <!-- <xacro:imu_sensor parent_link="head" sensor_name="imu_head"/> -->
+  <xacro:imu_sensor parent_link="head" sensor_name="imu_head"/>
 </robot>

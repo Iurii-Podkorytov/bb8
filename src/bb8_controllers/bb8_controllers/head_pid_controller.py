@@ -6,8 +6,6 @@ from sensor_msgs.msg import Imu
 from std_msgs.msg import Float64MultiArray
 import tf_transformations
 import math
-from rcl_interfaces.msg import ParameterDescriptor
-from rcl_interfaces.msg import SetParametersResult
 
 class HeadStabilizer(Node):
     def __init__(self):

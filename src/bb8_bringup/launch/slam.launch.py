@@ -145,6 +145,12 @@ def generate_launch_description():
         remappings=[('odometry/filtered', 'odom')]
     )
 
+    scan_filter = Node(
+        package="bb8_navigation",
+        executable="scan_filter",
+        parameters=[{"use_sim_time": True}],
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         gazebo_launch,
@@ -159,4 +165,5 @@ def generate_launch_description():
         head_pid_controller,
         wheels_odom,
         hamster_controller,
+        scan_filter,
     ])
