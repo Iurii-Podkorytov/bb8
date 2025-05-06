@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'base_transform = bb8_description.base_transform:main',
+            'imu_covariance_adder = bb8_description.imu_covariance_adder:main',
         ],
     },
 )
