@@ -3,6 +3,6 @@ slam_toolbox:
     map_frame: map
     odom_frame: odom
     base_frame: base_footprint
-    scan_topic: transformed_scan
+    scan_topic: scan_filtered
     mode: mapping
     use_sim_time: true

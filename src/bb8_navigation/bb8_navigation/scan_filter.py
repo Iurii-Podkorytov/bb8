@@ -22,7 +22,7 @@ class ScanFilter(Node):
         self.ts = ApproximateTimeSynchronizer([self.imu_sub, self.scan_sub], queue_size=10, slop=0.1)
         self.ts.registerCallback(self.sync_callback)
         
-        self.scan_pub = self.create_publisher(LaserScan, '/transformed_scan', 10)
+        self.scan_pub = self.create_publisher(LaserScan, '/scan_filtered', 10)
         self.get_logger().info(f"ScanFilter node started. Sphere radius: {self.sphere_radius}, Max Z dev: {self.max_z_dev}")
         
     def sync_callback(self, imu_msg, scan_msg):

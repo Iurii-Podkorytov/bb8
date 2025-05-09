@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, ExecuteProcess, TimerAction
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
@@ -174,6 +174,16 @@ def generate_launch_description():
         output='screen'
     )
 
+    nav2_bringup_params_file = PathJoinSubstitution([
+        FindPackageShare('bb8_navigation'),
+        'config', 'nav2_params.yaml'
+    ])
+    nav2_map_file = PathJoinSubstitution([
+        FindPackageShare('bb8_navigation'),
+        'maps', 'map.yaml'  # Ensure 'map.yaml' and 'map.pgm' exist here
+    ])
+
+
     nav2_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
@@ -182,16 +192,14 @@ def generate_launch_description():
             ])
         ]),
         launch_arguments={
-            'params_file': PathJoinSubstitution([
-                    FindPackageShare('bb8_navigation'),
-                    'config', 'nav2_params.yaml'
-            ]),
-            'map': PathJoinSubstitution([
-                FindPackageShare('bb8_navigation'),
-                'maps', 'map.yaml'
-                ]),
+            'use_sim_time': 'True',
+            'params_file': nav2_bringup_params_file,
+            'map': nav2_map_file,
+            'autostart': 'True',
+            'slam': 'False',
         }.items()
     )
+
 
     return LaunchDescription([
         robot_state_publisher_node,
