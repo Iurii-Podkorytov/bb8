@@ -19,7 +19,7 @@ def generate_launch_description():
 
     # Add the red_circle_follower node
     red_circle_follower_node = Node(
-        package='bb8_controllers',
+        package='bb8_navigation',
         executable='red_circle_follower',
         name='red_circle_follower',
         output='screen',

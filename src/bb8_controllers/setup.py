@@ -27,7 +27,6 @@ setup(
             'head_pid_controller = bb8_controllers.head_pid_controller:main',
             'hamster_controller = bb8_controllers.hamster_controller:main',
             'wheels_odom = bb8_controllers.wheels_odom:main',
-            'red_circle_follower = bb8_controllers.red_circle_follower:main',
         ],
     },
 )

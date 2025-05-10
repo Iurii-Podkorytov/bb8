@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'scan_filter = bb8_navigation.scan_filter:main',
+            'red_circle_follower = bb8_navigation.red_circle_follower:main',
         ],
     },
 )
