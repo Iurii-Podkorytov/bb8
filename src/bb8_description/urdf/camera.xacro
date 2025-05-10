@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+    <!-- Camera Dimensions -->
     <xacro:property name="camera_length" value="0.01" />
     <xacro:property name="camera_width" value="0.1" />
     <xacro:property name="camera_height" value="0.05" />
 
+    <!-- Camera Link -->
     <link name="camera_link">
         <visual>
             <geometry>
@@ -21,30 +23,45 @@
                            xyz="0 0 0" rpy="0 0 0" />
     </link>
 
+    <!-- Fixed Joint from Head to Camera Link -->
     <joint name="base_camera_joint" type="fixed">
         <parent link="head" />
         <child link="camera_link" />
         <origin xyz="0.15 0 0.075" rpy="0 0 0" />
     </joint>
 
-    <link name="camera_link_optical">
-    </link>
+    <!-- Optical Frame (for ROS camera conventions) -->
+    <link name="camera_link_optical" />
 
     <joint name="camera_optical_joint" type="fixed">
-        <!-- these values have to be these values otherwise the gazebo camera
-            image won't be aligned properly with the frame it is supposedly
-            originating from -->
-        <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
         <parent link="camera_link"/>
         <child link="camera_link_optical"/>
+        <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
     </joint>
 
+    <!-- Gazebo Camera Sensor -->
     <gazebo reference="camera_link">
         <material>Gazebo/Red</material>
         <sensor name="camera_sensor" type="camera">
             <pose>0 0 0 0 0 0</pose>
             <visualize>false</visualize>
             <update_rate>10.0</update_rate>
+
+            <!-- Camera Parameters -->
+            <camera>
+                <horizontal_fov>1.0472</horizontal_fov> <!-- 60 degrees in radians -->
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>10.0</far>
+                </clip>
+            </camera>
+
+            <!-- ROS Integration -->
             <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
                 <frame_name>camera_link_optical</frame_name>
             </plugin>
