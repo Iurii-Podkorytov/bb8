@@ -56,11 +56,13 @@
     <dynamics damping="0.1" friction="0.01"/>
   </joint>
 
-  <!-- Fixed joint to attach head to the final rotation link -->
-  <joint name="head_attachment" type="fixed">
+  <!-- Continuous revolute joint for z -->
+  <joint name="head_z_joint" type="continuous">
     <parent link="head_y_link"/>
     <child link="head"/>
     <origin xyz="0 0 0.26" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.1" friction="0.01"/>
   </joint>
 
 </robot>

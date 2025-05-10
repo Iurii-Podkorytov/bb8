@@ -69,6 +69,13 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}],
     )
 
+    head_z_controller_spawner_node = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["head_z_controller"],
+        parameters=[{'use_sim_time': True}],
+    )
+
     # Static transforms for sphere visualization in RViz
     sphere_tf_publisher_nodes = [
         Node(
@@ -185,6 +192,7 @@ def generate_launch_description():
         joint_broad_spawner_node,
         wheels_controller_spawner_node,
         head_controller_spawner_node,
+        head_z_controller_spawner_node,
         head_pid_controller_node,
         hamster_controller_node,
 

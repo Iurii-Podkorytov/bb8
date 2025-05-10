@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Fixed joint to attach the camera to the front of the head -->
+  <joint name="camera_joint" type="fixed">
+    <parent link="head"/>
+    <child link="camera"/>
+    <origin xyz="0.15 0 0.075" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Camera Link Definition -->
+  <link name="camera">
+    <!-- Visual Representation -->
+    <visual>
+      <geometry>
+        <!-- Simple box to represent a camera -->
+        <box size="0.04 0.04 0.02"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <!-- Inertial Properties (lightweight sensor) -->
+    <inertial>
+      <mass value="0.05"/> <!-- Lighter than lidar -->
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Gazebo Sensor Plugin -->
+  <gazebo reference="camera">
+    <sensor name="camera_sensor" type="camera">
+      <visualize>true</visualize>
+      <update_rate>30.0</update_rate> <!-- Higher rate for smoother video -->
+
+      <!-- Camera Properties -->
+      <camera>
+        <horizontal_fov>${pi/2}</horizontal_fov> <!-- 90 degrees FOV -->
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>10.0</far>
+        </clip>
+      </camera>
+
+      <!-- ROS Integration -->
+      <plugin name="camera_plugin" filename="libgazebo_ros_camera_sensor.so">
+        <ros>
+          <remapping>~/image:=image_raw</remapping>
+        </ros>
+        <frame_name>camera</frame_name>
+        <topic_name>camera/image_raw</topic_name>
+        <hack_baseline>0.07</hack_baseline> <!-- Optional for stereo -->
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>
