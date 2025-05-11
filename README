@@ -1,0 +1,55 @@
+# 🤖 BB-8 Inspired Spherical Companion Robot
+---
+
+## 🔍 Overview  
+This project implements an autonomous spherical robot inspired by BB-8, combining **hamster drive mechanics** (an internal differential-drive robot propelling an outer sphere) and a **2-DOF revolute "neck"** for LiDAR/camera orientation. Our goal is to design a system integrating computer vision, hardware control, and motion planning to enable autonomous navigation and user interaction.
+
+The repository is split into two branches:  
+- **Simulation**: Gazebo environment for testing control algorithms.  
+- **Hardware**: Implementation for a physical prototype.
+
+![Spherical Robot Diagram](https://example.com/spherical-diagram.png) *(Placeholder: Hamster drive + neck mechanism diagram)*  
+
+---
+
+## ⚙️ Features  
+- **Hamster Drive**: Internal differential-drive system for stable, collision-resilient motion  
+- **2-DOF Neck**: Tilt/swivel head mechanism for dynamic sensor orientation 
+- **ROS2 NAV2 Stack**: SLAM, path planning, and obstacle avoidance
+---
+
+## 🧪 Simulation  
+### Dependencies  
+- ROS2 packages: 
+
+### Usage  
+1. Build a map:
+   ```bash  
+   ros2 launch bb8_bringup mapping.launch.py
+   ```  
+2. Launch navigation to a goal on a pre-built map: 
+   ```bash  
+   ros2 launch bb8_bringup navigation.launch.py
+   ```  
+3. Follow a target:  
+   ```bash  
+    ros2 launch bb8_bringup follower.launch.py
+   ```
+
+![Gazebo Simulation](*(Placeholder: Gazebo screenshot)*)
+
+---
+
+## 🛠️ Hardware  
+### Dependencies
+
+### Usage  
+
+
+![Hardware Prototype](https://example.com/hardware-build.png) *(Placeholder: Physical robot photo)*  
+
+---
+
+## 🚀 Future Plans
+
+--- 
