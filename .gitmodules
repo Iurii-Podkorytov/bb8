@@ -1,6 +1,6 @@
-[submodule "src/hardware/maxon_epos4_ros1"]
-	path = src/hardware/maxon_epos4_ros1
-	url = https://github.com/Roboprotos/maxon_epos4_ros1.git
 [submodule "src/hardware/sllidar_ros2"]
 	path = src/hardware/sllidar_ros2
 	url = https://github.com/Slamtec/sllidar_ros2.git
+[submodule "src/hardware/socketcan"]
+	path = src/hardware/socketcan
+	url = https://github.com/GOFIRST-Robotics/ros2socketcan_bridge.git
