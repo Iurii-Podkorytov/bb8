@@ -108,8 +108,8 @@ def main(args=None):
     node = MotorDriverNode()
     try:
         rclpy.spin(node)
+        rclpy.shutdown()
     except KeyboardInterrupt:
         pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
