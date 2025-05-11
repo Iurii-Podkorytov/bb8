@@ -2,42 +2,49 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from can_msgs.msg import Frame
+# from can_msgs.msg import Frame
 from std_msgs.msg import Empty
+import can
 
 BASE_WIDTH = 300.0  # mm
-CAN_OUT_TOPIC = "/CAN/can0/transmit"
-CAN_IN_TOPIC = "/CAN/can0/receive"
+# CAN_OUT_TOPIC = "/CAN/can0/transmit"
+# CAN_IN_TOPIC = "/CAN/can0/receive"
+CAN_INTERFACE = 'can0'
 
 
 class MotorDriverNode(Node):
     def __init__(self):
         super().__init__('motor_driver_node')
+        self.bus = can.interface.Bus(channel=CAN_INTERFACE, interface='socketcan')
+        self.get_logger().info("Initializing...")
 
         self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
-        self.publisher = self.create_publisher(Frame, CAN_OUT_TOPIC, 10)
-        # self.publisher_right = self.create_publisher(Frame, CAN_OUT_TOPIC, 10)
+        # self.publisher = self.create_publisher(Frame, CAN_OUT_TOPIC, 10)
 
         self.left_id = 0x601
         self.right_id = 0x602
         self.left_resp = 0x581
         self.right_resp = 0x582
 
+        self.get_logger().info("A.")
         self.start_motors()
+        self.get_logger().info("B.")
 
-    def create_frame(self, arbitration_id, data):
-        frame = Frame()
-        frame.id = arbitration_id
-        frame.is_extended = False
-        frame.dlc = len(data)
-        frame.data = data + [0] * (8 - len(data))  # Ensure 8 bytes
-        return frame
+    # def create_frame(self, arbitration_id, data):
+    #     frame = Frame()
+    #     frame.id = arbitration_id
+    #     frame.is_extended = False
+    #     frame.dlc = len(data)
+    #     frame.data = data + [0] * (8 - len(data))  # Ensure 8 bytes
+    #     return frame
 
     def send_command(self, motor, data):
         arbitration_id = self.left_id if motor == 'left' else self.right_id
-        frame = self.create_frame(arbitration_id, data)
 
-        self.publisher.publish(frame)
+        msg = can.Message(arbitration_id=arbitration_id, data=data, is_extended_id=False)
+        self.bus.send(msg)
+        res = self.bus.recv(timeout=1.0)
+        return res
 
     def start_motors(self):
         commands = [
