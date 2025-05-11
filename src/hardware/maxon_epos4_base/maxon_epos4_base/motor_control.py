@@ -5,8 +5,10 @@ from geometry_msgs.msg import Twist
 # from can_msgs.msg import Frame
 from std_msgs.msg import Empty
 import can
+from time import sleep
 
-BASE_WIDTH = 300.0  # mm
+BASE_WIDTH = 353.5  # mm
+ACCEL_MAX = 1000  # mm / s^2
 # CAN_OUT_TOPIC = "/CAN/can0/transmit"
 # CAN_IN_TOPIC = "/CAN/can0/receive"
 CAN_INTERFACE = 'can0'
@@ -26,9 +28,8 @@ class MotorDriverNode(Node):
         self.left_resp = 0x581
         self.right_resp = 0x582
 
-        self.get_logger().info("A.")
         self.start_motors()
-        self.get_logger().info("B.")
+        self.get_logger().info("Motors started.")
 
     # def create_frame(self, arbitration_id, data):
     #     frame = Frame()
@@ -47,14 +48,23 @@ class MotorDriverNode(Node):
         return res
 
     def start_motors(self):
+        speed_bytes = list((ACCEL_MAX).to_bytes(4, byteorder='little', signed=True))
         commands = [
             [0x2B, 0x40, 0x60, 0x00, 0x06, 0x00, 0x00, 0x00],
             [0x2B, 0x40, 0x60, 0x00, 0x07, 0x00, 0x00, 0x00],
             [0x2B, 0x40, 0x60, 0x00, 0x0F, 0x00, 0x00, 0x00],
+            None,
+            [0x23, 0x83, 0x60, 0x00] + speed_bytes,
+            [0x23, 0x84, 0x60, 0x00] + speed_bytes,
+            [0x2B, 0x40, 0x60, 0x00, 0x0F, 0x00, 0x00, 0x00],
+            None,
         ]
         for cmd in commands:
-            self.send_command('left', cmd)
-            self.send_command('right', cmd)
+            if cmd is None:
+                sleep(0.5)
+            else:
+                self.send_command('left', cmd)
+                self.send_command('right', cmd)
 
     def stop_motors(self):
         stop_cmd = [0x2B, 0x40, 0x60, 0x00, 0x01, 0x00, 0x00, 0x00]
@@ -89,6 +99,7 @@ class MotorDriverNode(Node):
         self.set_speed('left', 0)
         self.set_speed('right', 0)
         self.stop_motors()
+        self.bus.shutdown()
         super().destroy_node()
 
 
