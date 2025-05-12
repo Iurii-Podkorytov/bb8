@@ -43,8 +43,22 @@ The repository is split into two branches:
 ## 🛠️ Hardware  
 ### Dependencies
 
+Requires ROS2 (tested on ![ROS2 Humble](https://docs.ros.org/en/humble/Installation.html)) and python-can package:
+```bash
+pip install python-can
+```
+To run keyboard control, install additionally following ROS2 package:
+```bash
+sudo apt install ros-humble-teleop-twist-keyboard
+```
+
 ### Usage  
 
+To run keyboard control, run following commands, one per command shell:
+```bash
+ros2 run maxon_epos4_base motor_control
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
 
 ![Hardware Prototype](images/new_robot2.jpg)
 
