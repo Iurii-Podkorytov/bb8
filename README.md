@@ -49,7 +49,7 @@ pip install python-can
 ```
 To run keyboard control, install additionally following ROS2 package:
 ```bash
-   sudo apt install ros-${ROS_DISTRO}-teleop-twist-keyboard
+sudo apt install ros-${ROS_DISTRO}-teleop-twist-keyboard
 ```
 
 ### Usage  
