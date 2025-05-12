@@ -54,7 +54,17 @@ sudo apt install ros-humble-teleop-twist-keyboard
 
 ### Usage  
 
-To run keyboard control, run following commands, one per command shell:
+To run keyboard control, switch to the hardware branch:
+```bash
+git checkout hardware
+```
+
+Build:
+```bash
+colcon build --packages-select maxon_epos4_base
+```
+
+Then run following commands, one per command shell:
 ```bash
 ros2 run maxon_epos4_base motor_control
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
