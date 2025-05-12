@@ -8,7 +8,7 @@ The repository is split into two branches:
 - **Simulation**: Gazebo environment for testing control algorithms.  
 - **Hardware**: Implementation for a physical prototype.
 
-![Spherical Robot Diagram](https://example.com/spherical-diagram.png) *(Placeholder: Hamster drive + neck mechanism diagram)*  
+![Spherical Robot Diagram](images/gazebo_simulation.png)
 
 ---
 
@@ -20,7 +20,7 @@ The repository is split into two branches:
 
 ## 🧪 Simulation  
 ### Dependencies  
-- ROS2 packages: 
+- ROS2 packages: `nav2`, `slam_toolbox`, `ros2_control`
 
 ### Usage  
 1. Build a map:
@@ -36,7 +36,7 @@ The repository is split into two branches:
     ros2 launch bb8_bringup follower.launch.py
    ```
 
-![Gazebo Simulation](*(Placeholder: Gazebo screenshot)*)
+![Gazebo Simulation](images/image.png)
 
 ---
 
@@ -46,7 +46,7 @@ The repository is split into two branches:
 ### Usage  
 
 
-![Hardware Prototype](https://example.com/hardware-build.png) *(Placeholder: Physical robot photo)*  
+![Hardware Prototype](images/new_robot2.jpg)
 
 ---
 
